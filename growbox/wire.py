@@ -7,23 +7,46 @@ from smbus2 import SMBus
 
 
 class Wire:
-    """A base class and interfaces to suit the relative commands."""
-    def __init__(self, address=None, channel=1, **kwargs):
-        self.address = self.address if address is None else address
+    """
+    A base class and interfaces to suit the relevant commands. Set the address
+    attribute of your subclass and your jump_address to the appropriate
+    alternate address if your device supports it.
+    """
+
+    address = 0  # type: int
+    jump_address = 0  # type: int
+
+    def __init__(self, address=None, channel=1, addr_jmp=False, **kwargs):
+        # Set address of i2c to appropriate address, or override completely
+        if address == 0:
+            if self.jump_address != 0:
+                self.address = self.jump_address if addr_jmp else self.address
+        else:
+            self.address = address
+        if self.address == 0:
+            raise ValueError(f"No device I2C address specified.")
+
         self.bus = SMBus(channel)
 
-    def write_block(self, offset, data):
-        self.bus.write_i2c_block_data(self.address, offset, data)
+    def write(self, data, offset=0):
+        """
+        Writes a set of values to the provided offset.  If no offset is
+        provided, no register is assumed.
+        """
+        if isinstance(data, list):
+            # Writes bytes
+            self.bus.write_i2c_block_data(self.address, offset, data)
+        else:
+            # Writes byte
+            self.bus.write_byte_data(self.address, offset, data)
 
-    def write(self, offset, data):
-        self.bus.write_byte_data(self.address, offset, data)
-
-    def read_block(self, offset, size):
-        return self.bus.read_i2c_block_data(self.address, offset, size)
-
-    def read(self, offset):
-        return self.bus.read_byte_data(self.address, offset)
-
-    def request_response(self, request, response_size):
-        self.write(0, request)
-        return self.read_block(0, response_size)
+    def read(self, offset=0, size=None):
+        """
+        Reads a set of values from the provided offset.  If no offset is
+        provided, no register is assumed. Specify size to read more than a
+        single byte.
+        """
+        if size is None:
+            return self.bus.read_byte_data(self.address, offset)
+        else:
+            return self.bus.read_i2c_block_data(self.address, offset, size)

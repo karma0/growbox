@@ -21,8 +21,8 @@ class ApplicationBuilder:
         self.devices.append(device)
         return device
 
-    def build_switch(self, *args, address=None, **kwargs):
-        return self.build_generic_device(address, *args, cls=Relay, **kwargs)
+    #def build_switch(self, *args, address=None, **kwargs):
+    #    return self.build_generic_device(address, *args, cls=Relay, **kwargs)
 
     def build_quad_switch(self, *args, address=None, **kwargs):
         return self.build_generic_device(address, *args, cls=QuadRelay, **kwargs)

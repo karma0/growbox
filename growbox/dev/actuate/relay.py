@@ -6,14 +6,16 @@
 from growbox.wire import Wire
 
 
-class Relay:
-
-
 class QuadRelay(Wire):
-    address = 0x60
+    """
+    SparkFun's QWIIC quad relay device and corresponding interface.
+    """
+    address = 0x6D
+    jumper_address = 0x6C
 
     status_offset = 0x05
 
+    # commands
     turn_all_off = 0xA
     turn_all_on = 0xB
     toggle_all = 0xC
@@ -30,18 +32,34 @@ class QuadRelay(Wire):
         0x04,
     ]
 
-    def toggle_all(self):
-        self.write(
+    def all_off(self):
+        """Turn off all relays."""
+        self.write(self.turn_all_off)
+
+    def all_on(self):
+        """Turn on all relays."""
+        self.write(self.turn_all_on)
+
+    def all_toggle(self):
+        """Toggle all relays."""
+        self.write(self.toggle_all)
+
     def toggle(self, relay_id):
-        self.write(self.relay_addresses[relay_id]
+        """Toggle a relay by index starting at 0."""
+        self.write(self.relay_addresses[relay_id])
 
-    def get_status(self, relay_id):
+    def status(self, relay_id):
+        """Check a relay status by index starting at 0."""
         return self.status_results[
-            self.request_response(self.status_offset + relay_id)]
+            self.read(self.status_offset + relay_id)]
 
-    def get_relays_status(self):
+    def all_status(self):
+        """Check all relays status."""
         return [
             self.status_results[resp] for resp in
-            self.request_response(self.status_offset, len(self.relay_addresses))
+            self.read(self.status_offset, len(self.relay_addresses))
         ]
 
+
+class Relay:
+    pass
