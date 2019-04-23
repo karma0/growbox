@@ -28,6 +28,12 @@ class Wire:
 
         self.bus = SMBus(channel)
 
+    def begin(self, *args, **kwargs):
+        """
+        Override this function if your device has some I2C/SPI setup.
+        """
+        pass
+
     def write(self, data, offset=0):
         """
         Writes a set of values to the provided offset.  If no offset is
