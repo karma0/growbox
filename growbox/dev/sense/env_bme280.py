@@ -3,6 +3,7 @@
 """Environmental Measurement using the BME280"""
 
 
+from math import log10, log
 from enum import Enum
 from collections import defaultdict
 
@@ -44,37 +45,38 @@ class BME280StandbyTime(Enum):
 
 
 class BME280CompensationRegister(Enum):
-    DIG_T1_LSB = 0x88
-    DIG_T1_MSB = 0x89
-    DIG_T2_LSB = 0x8A
-    DIG_T2_MSB = 0x8B
-    DIG_T3_LSB = 0x8C
-    DIG_T3_MSB = 0x8D
-    DIG_P1_LSB = 0x8E
-    DIG_P1_MSB = 0x8F
-    DIG_P2_LSB = 0x90
-    DIG_P2_MSB = 0x91
-    DIG_P3_LSB = 0x92
-    DIG_P3_MSB = 0x93
-    DIG_P4_LSB = 0x94
-    DIG_P4_MSB = 0x95
-    DIG_P5_LSB = 0x96
-    DIG_P5_MSB = 0x97
-    DIG_P6_LSB = 0x98
-    DIG_P6_MSB = 0x99
-    DIG_P7_LSB = 0x9A
-    DIG_P7_MSB = 0x9B
-    DIG_P8_LSB = 0x9C
-    DIG_P8_MSB = 0x9D
-    DIG_P9_LSB = 0x9E
-    DIG_P9_MSB = 0x9F
-    DIG_H2_LSB = 0xE1
-    DIG_H2_MSB = 0xE2
-    DIG_H3 =     0xE3
-    DIG_H4_MSB = 0xE4
-    DIG_H4_LSB = 0xE5
-    DIG_H5_MSB = 0xE6
-    DIG_H6 =     0xE7
+    T1_LSB = 0x88
+    T1_MSB = 0x89
+    T2_LSB = 0x8A
+    T2_MSB = 0x8B
+    T3_LSB = 0x8C
+    T3_MSB = 0x8D
+    P1_LSB = 0x8E
+    P1_MSB = 0x8F
+    P2_LSB = 0x90
+    P2_MSB = 0x91
+    P3_LSB = 0x92
+    P3_MSB = 0x93
+    P4_LSB = 0x94
+    P4_MSB = 0x95
+    P5_LSB = 0x96
+    P5_MSB = 0x97
+    P6_LSB = 0x98
+    P6_MSB = 0x99
+    P7_LSB = 0x9A
+    P7_MSB = 0x9B
+    P8_LSB = 0x9C
+    P8_MSB = 0x9D
+    P9_LSB = 0x9E
+    P9_MSB = 0x9F
+    H1 =     0xA1
+    H2_LSB = 0xE1
+    H2_MSB = 0xE2
+    H3 =     0xE3
+    H4_MSB = 0xE4
+    H4_LSB = 0xE5
+    H5_MSB = 0xE6
+    H6 =     0xE7
 
 
 class BME280Register(Enum):
@@ -90,7 +92,6 @@ class BME280Register(Enum):
     TEMPERATURE_XLSB = 0xFC  # Temperature XLSB
     HUMIDITY_MSB =     0xFD  # Humidity MSB
     HUMIDITY_LSB =     0xFE  # Humidity LSB
-    DIG_H1 =           0xA1
     CHIP_ID =          0xD0  # Chip ID
     RST =              0xE0  # Softreset Reg
 
@@ -109,11 +110,18 @@ class BME280Sensor(Wire):
     jump_address = 0x76
 
     # Settings and their defaults
-    mode = BME280Mode.NORMAL
-    standby_time = BME280StandbyTime.MS__50
-    temperature_oversample = BME280SampleAmount.COEFF_1
-    humidity_oversample = BME280SampleAmount.COEFF_1
-    pressure_oversample = BME280SampleAmount.COEFF_1
+    _mode = BME280Mode.NORMAL
+    _standby_time = BME280StandbyTime.MS__50
+    _filter = BME280Filter.COEFF_2
+
+    _temperature_oversample = BME280SampleAmount.COEFF_1
+    _humidity_oversample = BME280SampleAmount.COEFF_1
+    _pressure_oversample = BME280SampleAmount.COEFF_1
+
+    temperature_correction = 12.25
+    """temperature adjustment to account for operating temperature changes."""
+
+    reference_pressure = 101325.0
 
     calibration_data = defaultdict(int)  # type: dict
 
@@ -123,46 +131,75 @@ class BME280Sensor(Wire):
         # Reading all compensation data into self.calibration_data
         for reg in BME280CompensationRegister:
             sreg = str(reg)
-            if 'DIG_H4_MSB' in sreg or 'DIG_H5_MSB' in sreg:
-                self.calibration_data[sreg] += self.read(reg) << 4
-            elif 'DIG_H4_LSB' in sreg:
-                self.calibration_data[sreg] += self.read(reg) & 0x0F
-            elif 'DIG_H5_LSB' in sreg:
-                self.calibration_data[sreg] += (self.read(reg) >> 4) & 0x0F
+            k_sreg = sreg[:-4]
+
+            if sreg == 'H1' or sreg == 'H3' or sreg == 'H6':
+                k_sreg = sreg
+
+            if 'H4_MSB' in sreg or 'H5_MSB' in sreg:
+                self.calibration_data[k_sreg] += self.read(reg) << 4
+            elif 'H4_LSB' in sreg:
+                self.calibration_data[k_sreg] += self.read(reg) & 0x0F
+            elif 'H5_LSB' in sreg:
+                self.calibration_data[k_sreg] += (self.read(reg) >> 4) & 0x0F
             elif 'MSB' in sreg:
-                self.calibration_data[sreg] += self.read(reg) << 8
+                self.calibration_data[k_sreg] += self.read(reg) << 8
             else:
-                self.calibration_data[sreg] += self.read(reg)
+                self.calibration_data[k_sreg] += self.read(reg)
+
+        # Init settings to their defaults
+        self.mode = self._mode
+        self.standby_time = self._standby_time
+        self.filter = self._filter
 
         self.set_oversample('temperature')
         self.set_oversample('humidity')
         self.set_oversample('pressure')
 
-    def set_mode(self, mode):
+    # Getters and setters
+
+    @property
+    def mode(self):
+        # Mask 2 bits
+        self._mode = BME280Mode(
+            self.read(BME280Register.CTRL_MEAS) & 0b00000011)
+        return self._mode
+
+    @mode.setter
+    def mode(self, mode):
         if mode > 0b11:
             mode = BME280Mode.SLEEP
+        self._mode = mode
 
         ctrldata = self.read(BME280Register.CTRL_MEAS)
         ctrldata &= ~( (1<<1) | (1<<0) )  # Create mask for bits 1-2
         ctrldata |= mode
         self.write(BME280Register.CTRL_MEAS, ctrldata)
 
-    def get_mode(self):
-        # Mask 2 bits
-        return self.read(BME280Register.CTRL_MEAS) & 0b00000011
+    @property
+    def standby_time(self):
+        return self._standby_time
 
-    def set_standby_time(self, standby_time):
+    @standby_time.setter
+    def standby_time(self, standby_time):
         if standby_time > 0b111:
             standby_time = BME280StandbyTime.MS__50
+        self._standby_time = standby_time
 
         ctrldata = self.read(BME280Register.CONFIG)
         ctrldata &= ~( (1<<7) | (1<<6) | (1<<5) )  # Create mask for bits 5-7
         ctrldata |= (standby_time << 5)  # Move to bits 5-7
         self.write(BME280Register.CONFIG, ctrldata)
 
-    def set_filter(self, filter_setting):
+    @property
+    def filter(self):
+        return self._filter
+
+    @filter.setter
+    def filter(self, filter_setting):
         if filter_setting > 0b111:
             filter_setting = BME280Filter.OFF
+        self._filter = filter_setting
 
         ctrldata = self.read(BME280Register.CONFIG)
         ctrldata &= ~( (1<<4) | (1<<3) | (1<<2) )  # Create mask for bits 2-4
@@ -173,8 +210,8 @@ class BME280Sensor(Wire):
         if amount is not None:
             setattr(self, f"{attr}_oversample", amount)
 
-        orig_mode = self.get_mode()
-        self.set_mode(BME280Mode.SLEEP)
+        orig_mode = self.mode
+        self.mode = BME280Mode.SLEEP
 
         ctrldata = self.read(BME280Register.CTRL_MEAS)
 
@@ -186,7 +223,7 @@ class BME280Sensor(Wire):
         ctrldata |= (getattr(self, f"{attr}_oversample") << bit_a)  # Move to bits 2-4
         self.write(BME280Register.CTRL_MEAS, ctrldata)
 
-        self.set_mode(orig_mode)
+        self.mode = orig_mode
 
     def is_measuring(self):
         return self.read(BME280Register.STAT) & (1<<3)
@@ -194,11 +231,147 @@ class BME280Sensor(Wire):
     def reset(self):
         self.write(BME280Register.RST, 0xB6)
 
-    def read_temp_c(self):
-        pass
+    # Pressure
 
-    def read_temp_f(self):
-        pass
+    def read_pressure(self):
+        buffer = self.read(BME280Register.PRESSURE_MSB, 3)
+        adc_p = (int(buffer[0]) << 12) | \
+                (int(buffer[1]) << 4) | \
+                ((int(buffer[2]) >> 4) & 0x0F)
+
+        var1 = self.t_fine - 128000
+        var2 = var1 * var1 * self.calibration_data['P6']
+        var2 = var2 + ((var1 * self.calibration_data['P5']) << 17)
+        var2 = var2 + (self.calibration_data['P4'] << 35)
+        var1 = (var1 * var1 * self.calibration_data['P3'] >> 8) + \
+            ((var1 * self.calibration_data['P2']) << 12)
+        var1 = ((1 << 47) + var1) * self.calibration_data['P1'] >> 33
+
+        p_acc = 1048576 - adc_p
+        try:
+            p_acc = (((p_acc << 31) - var2) * 3125) / var1
+        except ZeroDivisionError:  # var1 == 0
+            return 0
+
+        var1 = (self.calibration_data['P9'] * ((p_acc >> 13) ** 2)) >> 25
+        var2 = (self.calibration_data['P8'] * p_acc) >> 19
+        p_acc = ((p_acc + var1 + var2) >> 8) + \
+                (self.calibration_data['P7'] << 4)
+
+        return p_acc / 256.0
+
+    def read_altitude_meters(self):
+        return -44330.77 * (
+            (self.read_pressure() / self.reference_pressure) ** 0.190263
+        ) - 1.0
+
+    def read_altitude_feet(self):
+        return  self.read_altitude_meters * 3.28084
+
+    # Humidity
 
     def read_humidity(self):
-        pass
+        buffer = self.read(BME280Register.HUMIDITY_MSB, 2)
+        adc_h = (buffer[0] << 8) | buffer[1]
+
+        var1 = self.t_fine - 76800
+        var1 = (
+            (
+                (
+                    (adc_h << 14)
+                    - (self.calibration_data['H4'] << 20)
+                    - (self.calibration_data['H5'] * var1)
+                ) + 16384
+            ) >> 15
+        ) * (
+            (
+                (
+                    (
+                        (
+                            (
+                                (
+                                    var1 * self.calibration_data['H6']
+                                ) >> 10
+                            ) * (
+                                (
+                                    (
+                                        var1 * self.calibration_data['H3']
+                                    ) >> 11
+                                ) + 32768
+                            )
+                        ) >> 10
+                    ) + 2097152
+                ) * self.calibration_data['H2'] + 8192
+            ) >> 14
+        )
+        var1 = var1 - (
+            (
+                (
+                    (
+                        (var1 >> 15) ** 2
+                    ) >> 7
+                ) * self.calibration_data['H1']
+            ) >> 4
+        )
+
+        if var1 < 0:
+            var1 = 0
+        elif var1 > 419430400:
+            var1 = 419430400
+
+        return (var1 >> 12) / 1024.0
+
+    # Temperature
+
+    def read_temp_c(self):
+        buffer = self.read(BME280Register.TEMPERATURE_MSB, 3)
+        adc_t = (int(buffer[0]) << 12) | \
+                (int(buffer[1]) << 4) | \
+                ((int(buffer[2]) >> 4) & 0x0F)
+
+        var1 = (
+            (
+                (adc_t >> 3)
+                - (self.calibration_data['T1'] << 1)
+            ) * self.calibration_data['T2']
+        ) >> 11
+
+        var2 = (
+            (
+                (
+                    (
+                        (adc_t >> 4)
+                        - self.calibration_data['T1']
+                    ) * (
+                        (adc_t >> 4)
+                        - self.calibration_data['T1']
+                    )
+                ) >> 12
+            ) * self.calibration_data['T3']
+        ) >> 14
+
+        self.t_fine = var1 + var2
+        output = (self.t_fine * 5 + 128) >> 8
+        output /= 100
+        output += self.temperature_correction
+        return output
+
+    def read_temp_f(self):
+        return (self.read_temp_c() * 9) / 5 + 32
+
+    def dew_point_c(self):
+        celsius = self.read_temp_c()
+        humidity = self.read_humidity()
+        ratio = 373.15 / (273.15 + celsius)
+        rhs = -7.90298 * (ratio - 1)
+        rhs += 5.02808 * log10(ratio)
+        rhs += -1.3816e-7 * (pow(10, (11.344 * (1 - 1/ratio ))) - 1)
+        rhs += 8.1328e-3 * (pow(10, (-3.49149 * (ratio - 1))) - 1)
+        rhs += log10(1013.246)
+
+        vp = pow(10, rhs - 3) * humidity
+        temp = log(vp / 0.61078)
+        return (241.88 * temp) / (17.558 - temp)
+
+    def dew_point_f(self):
+        return self.dew_point_c() * 1.8 + 32
