@@ -233,7 +233,8 @@ class BME280Sensor(Wire):
 
     # Pressure
 
-    def read_pressure(self):
+    @property
+    def pressure(self):
         buffer = self.read(BME280Register.PRESSURE_MSB, 3)
         adc_p = (int(buffer[0]) << 12) | \
                 (int(buffer[1]) << 4) | \
@@ -260,17 +261,20 @@ class BME280Sensor(Wire):
 
         return p_acc / 256.0
 
-    def read_altitude_meters(self):
+    @property
+    def altitude_meters(self):
         return -44330.77 * (
-            (self.read_pressure() / self.reference_pressure) ** 0.190263
+            (self.pressure / self.reference_pressure) ** 0.190263
         ) - 1.0
 
-    def read_altitude_feet(self):
-        return  self.read_altitude_meters * 3.28084
+    @property
+    def altitude_feet(self):
+        return  self.altitude_meters * 3.28084
 
     # Humidity
 
-    def read_humidity(self):
+    @property
+    def humidity(self):
         buffer = self.read(BME280Register.HUMIDITY_MSB, 2)
         adc_h = (buffer[0] << 8) | buffer[1]
 
@@ -323,7 +327,8 @@ class BME280Sensor(Wire):
 
     # Temperature
 
-    def read_temp_c(self):
+    @property
+    def celsius(self):
         buffer = self.read(BME280Register.TEMPERATURE_MSB, 3)
         adc_t = (int(buffer[0]) << 12) | \
                 (int(buffer[1]) << 4) | \
@@ -356,22 +361,29 @@ class BME280Sensor(Wire):
         output += self.temperature_correction
         return output
 
-    def read_temp_f(self):
-        return (self.read_temp_c() * 9) / 5 + 32
+    @property
+    def fahrenheit(self):
+        return self.c2f(self.celsius)
 
+    @property
     def dew_point_c(self):
-        celsius = self.read_temp_c()
-        humidity = self.read_humidity()
-        ratio = 373.15 / (273.15 + celsius)
+        ratio = 373.15 / (273.15 + self.celsius)
         rhs = -7.90298 * (ratio - 1)
         rhs += 5.02808 * log10(ratio)
-        rhs += -1.3816e-7 * (pow(10, (11.344 * (1 - 1/ratio ))) - 1)
+        rhs += -1.3816e-7 * (pow(10, (11.344 * (1 - 1/ratio))) - 1)
         rhs += 8.1328e-3 * (pow(10, (-3.49149 * (ratio - 1))) - 1)
         rhs += log10(1013.246)
 
-        vp = pow(10, rhs - 3) * humidity
+        vp = pow(10, rhs - 3) * self.humidity
         temp = log(vp / 0.61078)
         return (241.88 * temp) / (17.558 - temp)
 
+    @property
     def dew_point_f(self):
-        return self.dew_point_c() * 1.8 + 32
+        return self.c2f(self.dew_point_c)
+
+    def c2f(self, celsius):
+        return (celsius * (9 / 5)) + 32
+
+    def f2c(self, fahrenheit):
+        return (fahrenheit - 32) * (5 / 9)
