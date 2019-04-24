@@ -34,17 +34,21 @@ class Wire:
         """
         pass
 
-    def write(self, data, offset=0):
+    def write(self, offset=0, data=None):
         """
         Writes a set of values to the provided offset.  If no offset is
         provided, no register is assumed.
         """
+        if data is None:
+            data = offset
+            offset = 0
+
         if isinstance(data, list):
             # Writes bytes
-            self.bus.write_i2c_block_data(self.address, offset, data)
+            return self.bus.write_i2c_block_data(self.address, offset, data)
         else:
             # Writes byte
-            self.bus.write_byte_data(self.address, offset, data)
+            return self.bus.write_byte_data(self.address, offset, data)
 
     def read(self, offset=0, size=None):
         """
