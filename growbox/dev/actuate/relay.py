@@ -70,9 +70,12 @@ class QuadRelay(Wire):
         except KeyError:
             return self.status(relay_id, retry=(retry - 1))
 
-    def all_status(self):
+    def all_status(self, retry=3):
         """Check all relays status."""
-        return [
-            self.status_results[resp] for resp in
-            self.read(self.status_offset, len(self.relay_addresses))
-        ]
+        try:
+            return [
+                self.status_results[resp] for resp in
+                self.read(self.status_offset, len(self.relay_addresses))
+            ]
+        except KeyError:
+            return self.all_status(retry=(retry - 1))
