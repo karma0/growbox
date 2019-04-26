@@ -3,7 +3,15 @@
 """Relay implementations"""
 
 
+from growbox.enum import Enum
 from growbox.wire import Wire
+
+
+class QuadRelayCommands(Enum):
+    # commands
+    ALL_OFF = 0xA
+    ALL_ON = 0xB
+    ALL_TOGGLE = 0xC
 
 
 class QuadRelay(Wire):
@@ -15,16 +23,6 @@ class QuadRelay(Wire):
 
     status_offset = 0x05
 
-    # commands
-    turn_all_off = 0xA
-    turn_all_on = 0xB
-    toggle_all = 0xC
-
-    status_results = {
-        0: False,
-        15: True,
-    }
-
     relay_addresses = [
         0x01,
         0x02,
@@ -32,17 +30,22 @@ class QuadRelay(Wire):
         0x04,
     ]
 
+    status_results = {
+        0: False,
+        15: True,
+    }
+
     def all_off(self):
         """Turn off all relays."""
-        self.write(self.turn_all_off)
+        self.write(QuadRelayCommands.ALL_OFF)
 
     def all_on(self):
         """Turn on all relays."""
-        self.write(self.turn_all_on)
+        self.write(QuadRelayCommands.ALL_ON)
 
     def all_toggle(self):
         """Toggle all relays."""
-        self.write(self.toggle_all)
+        self.write(QuadRelayCommands.ALL_TOGGLE)
 
     def toggle(self, relay_id):
         """Toggle a relay by index starting at 0."""
@@ -59,7 +62,3 @@ class QuadRelay(Wire):
             self.status_results[resp] for resp in
             self.read(self.status_offset, len(self.relay_addresses))
         ]
-
-
-class Relay:
-    pass
