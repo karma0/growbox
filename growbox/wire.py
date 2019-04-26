@@ -34,9 +34,19 @@ class Wire:
         """
         pass
 
+    def word2bytes(self, data):
+        msb = (data & 0xFF00) >> 8
+        lsb = data & 0x00FF
+        return [msb, lsb]
+
+    def bytes2word(self, data):
+        assert len(data) == 2
+        msb, lsb = data
+        return ((msb & 0x00FF) << 8) | (lsb & 0x00FF)
+
     def write(self, offset=0, data=None):
         """
-        Writes a set of values to the provided offset.  If no offset is
+        Writes a set of bytes to the provided offset.  If no offset is
         provided, no register is assumed.
         """
         if data is None:
@@ -50,9 +60,27 @@ class Wire:
             # Writes byte
             return self.bus.write_byte_data(self.address, offset, data)
 
+    def write_word(self, offset=0, data=None):
+        """
+        Writes a set of words to the provided offset.  If no offset is
+        provided, no register is assumed.
+        """
+        if data is None:
+            data = offset
+            offset = 0
+
+        if isinstance(data, list):
+            idx = 0
+            for word in data:
+                word_offset = idx * 2 + offset
+                self.write(offset=word_offset, data=self.word2bytes(word))
+                idx += 1
+        else:
+            self.write(offset=offset, data=self.word2bytes(data))
+
     def read(self, offset=0, size=None):
         """
-        Reads a set of values from the provided offset.  If no offset is
+        Reads a set of bytes from the provided offset.  If no offset is
         provided, no register is assumed. Specify size to read more than a
         single byte.
         """
@@ -60,3 +88,14 @@ class Wire:
             return self.bus.read_byte_data(self.address, offset)
         else:
             return self.bus.read_i2c_block_data(self.address, offset, size)
+
+    def read_word(self, offset=0, size=None):
+        """
+        Reads a set of words from the provided offset.  If no offset is
+        provided, no register is assumed. Specify size to read more than a
+        single word.
+        """
+        if size is not None:
+            size *= 2  # we're counting bytes as words
+
+        return self.bytes2word(self.read(offset=offset, size=size))
