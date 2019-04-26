@@ -5,6 +5,8 @@
 
 from smbus2 import SMBus
 
+from growbox.enum import Enum
+
 
 class Wire:
     """
@@ -53,6 +55,12 @@ class Wire:
             data = offset
             offset = 0
 
+        if isinstance(offset, Enum):
+            offset = offset.value
+
+        if isinstance(data, Enum):
+            data = data.value
+
         if isinstance(data, list):
             # Writes bytes
             return self.bus.write_i2c_block_data(self.address, offset, data)
@@ -84,6 +92,9 @@ class Wire:
         provided, no register is assumed. Specify size to read more than a
         single byte.
         """
+        if isinstance(offset, Enum):
+            offset = offset.value
+
         if size is None:
             return self.bus.read_byte_data(self.address, offset)
         else:
