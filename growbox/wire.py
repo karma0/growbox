@@ -20,11 +20,13 @@ class Wire:
 
     def __init__(self, address=None, channel=1, addr_jmp=False, **kwargs):
         # Set address of i2c to appropriate address, or override completely
-        if address == 0:
-            if self.jump_address != 0:
-                self.address = self.jump_address if addr_jmp else self.address
-        else:
-            self.address = address
+        if address is not None:
+            if address == 0:
+                if self.jump_address != 0:
+                    self.address = self.jump_address if addr_jmp else self.address
+            else:
+                self.address = address
+
         if self.address == 0:
             raise ValueError(f"No device I2C address specified.")
 
