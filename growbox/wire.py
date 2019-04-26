@@ -48,7 +48,7 @@ class Wire:
         msb, lsb = data
         return ((msb & 0x00FF) << 8) | (lsb & 0x00FF)
 
-    def write(self, offset=0, data=None):
+    def write(self, offset=0, data=None, retry=3):
         """
         Writes a set of bytes to the provided offset.  If no offset is
         provided, no register is assumed.
@@ -63,12 +63,18 @@ class Wire:
         if isinstance(data, Enum):
             data = data.value
 
-        if isinstance(data, list):
-            # Writes bytes
-            return self.bus.write_i2c_block_data(self.address, offset, data)
-        else:
-            # Writes byte
-            return self.bus.write_byte_data(self.address, offset, data)
+        if retry == 0:
+            return None
+
+        try:
+            if isinstance(data, list):
+                # Writes bytes
+                return self.bus.write_i2c_block_data(self.address, offset, data)
+            else:
+                # Writes byte
+                return self.bus.write_byte_data(self.address, offset, data)
+        except OSError:
+            return self.write(offset, data, retry - 1)
 
     def write_word(self, offset=0, data=None):
         """
@@ -88,7 +94,7 @@ class Wire:
         else:
             self.write(offset=offset, data=self.word2bytes(data))
 
-    def read(self, offset=0, size=None):
+    def read(self, offset=0, size=None, retry=3):
         """
         Reads a set of bytes from the provided offset.  If no offset is
         provided, no register is assumed. Specify size to read more than a
@@ -97,10 +103,13 @@ class Wire:
         if isinstance(offset, Enum):
             offset = offset.value
 
-        if size is None:
-            return self.bus.read_byte_data(self.address, offset)
-        else:
-            return self.bus.read_i2c_block_data(self.address, offset, size)
+        try:
+            if size is None:
+                return self.bus.read_byte_data(self.address, offset)
+            else:
+                return self.bus.read_i2c_block_data(self.address, offset, size)
+        except OSError:
+            return self.read(offset, size, retry - 1)
 
     def read_word(self, offset=0, size=None):
         """
