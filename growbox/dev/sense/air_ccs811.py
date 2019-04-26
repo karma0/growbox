@@ -68,49 +68,49 @@ class CCS811Sensor(Wire):
     def begin(self):
         reset_key = [0x11, 0xE5, 0x72, 0x8A]
         self.begin_core()
-        self.write(CSS811Register.SW_RESET, reset_key)
+        self.write(CSS811Register.SW_RESET.value, reset_key)
 
         temp = 0
         for step in range(200000):
             temp += 1
 
         if self.error_status or not self.app_valid:
-            return CSS811Error.INTERNAL_ERROR
+            return CSS811Error.INTERNAL_ERROR.value
 
-        if self.write(CSS811Register.APP_START) != 0:
-            return CSS811Error.I2C_ERROR
+        if self.write(CSS811Register.APP_START.value) != 0:
+            return CSS811Error.I2C_ERROR.value
 
-        self.drive_mode = CSS811DriveMode.SECONDS_1
+        self.drive_mode = CSS811DriveMode.SECONDS_1.value
 
     def read_algorithm_results(self):
-        data = self.read(CSS811Register.ALG_RESULT_DATA, 4)
+        data = self.read(CSS811Register.ALG_RESULT_DATA.value, 4)
 
         # Data ordered:
 	# co2MSB, co2LSB, tvocMSB, tvocLSB
         self.co2 = (data[0] << 8) | data[1]
         self.t_voc = (data[2] << 8) | data[3]
 
-        return CSS811Error.SUCCESS
+        return CSS811Error.SUCCESS.value
 
     @property
     def error_status(self):
-        return self.read(CSS811Register.STATUS) & 1 << 0
+        return self.read(CSS811Register.STATUS.value) & 1 << 0
 
     @property
     def data_available(self):
-        return self.read(CSS811Register.STATUS) & 1 << 3
+        return self.read(CSS811Register.STATUS.value) & 1 << 3
 
     @property
     def app_valid(self):
-        return self.read(CSS811Register.STATUS) & 1 << 4
+        return self.read(CSS811Register.STATUS.value) & 1 << 4
 
     @property
     def error(self):
-        return CSS811Error(self.read(CSS811Register.ERROR_ID))
+        return CSS811Error(self.read(CSS811Register.ERROR_ID.value))
 
     @property
     def baseline(self):
-        data = self.read(CSS811Register.BASELINE, 2)
+        data = self.read(CSS811Register.BASELINE.value, 2)
         return data[0] << 8 | data[1]
 
     @baseline.setter
@@ -119,7 +119,7 @@ class CCS811Sensor(Wire):
             (baseline >> 8) & 0x00FF,
             baseline & 0x00FF,
         ]
-        return self.write(CSS811Register.BASELINE, data)
+        return self.write(CSS811Register.BASELINE.value, data)
 
     @property
     def drive_mode(self):
@@ -128,10 +128,10 @@ class CCS811Sensor(Wire):
     @drive_mode.setter
     def drive_mode(self, mode):
         self._drive_mode = mode
-        value = self.read(CSS811Register.MEAS_MODE)
+        value = self.read(CSS811Register.MEAS_MODE.value)
         value &= ~(0b00000111 << 4)
         value |= mode << 4
-        self.write(CSS811Register.MEAS_MODE, value)
+        self.write(CSS811Register.MEAS_MODE.value, value)
 
     @property
     def environment(self):
@@ -148,10 +148,10 @@ class CCS811Sensor(Wire):
             (humidity + 250) / 500, 0,
             (celsius + 250) / 500, 0,
         ]
-        self.write(CSS811Register.ENV_DATA, data)
+        self.write(CSS811Register.ENV_DATA.value, data)
 
     def read_ntc(self):
-        data = self.read(CSS811Register.NTC, 4)
+        data = self.read(CSS811Register.NTC.value, 4)
         vref_counts = (data[0] << 8) | data[1]
         ntc_counts = (data[2] << 8) | data[3]
         self.resistance = ntc_counts * self.reference_resistance / vref_counts

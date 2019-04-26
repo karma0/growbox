@@ -137,15 +137,15 @@ class BME280Sensor(Wire):
                 k_sreg = sreg
 
             if 'H4_MSB' in sreg or 'H5_MSB' in sreg:
-                self.calibration_data[k_sreg] += self.read(reg) << 4
+                self.calibration_data[k_sreg] += self.read(reg.value) << 4
             elif 'H4_LSB' in sreg:
-                self.calibration_data[k_sreg] += self.read(reg) & 0x0F
+                self.calibration_data[k_sreg] += self.read(reg.value) & 0x0F
             elif 'H5_LSB' in sreg:
-                self.calibration_data[k_sreg] += (self.read(reg) >> 4) & 0x0F
+                self.calibration_data[k_sreg] += (self.read(reg.value) >> 4) & 0x0F
             elif 'MSB' in sreg:
-                self.calibration_data[k_sreg] += self.read(reg) << 8
+                self.calibration_data[k_sreg] += self.read(reg.value) << 8
             else:
-                self.calibration_data[k_sreg] += self.read(reg)
+                self.calibration_data[k_sreg] += self.read(reg.value)
 
         # Init settings to their defaults
         self.mode = self._mode
@@ -162,19 +162,19 @@ class BME280Sensor(Wire):
     def mode(self):
         # Mask 2 bits
         self._mode = BME280Mode(
-            self.read(BME280Register.CTRL_MEAS) & 0b00000011)
+            self.read(BME280Register.CTRL_MEAS.value) & 0b00000011)
         return self._mode
 
     @mode.setter
     def mode(self, mode):
-        if mode > 0b11:
+        if mode.value > 0b11:
             mode = BME280Mode.SLEEP
         self._mode = mode
 
-        ctrldata = self.read(BME280Register.CTRL_MEAS)
+        ctrldata = self.read(BME280Register.CTRL_MEAS.value)
         ctrldata &= ~( (1<<1) | (1<<0) )  # Create mask for bits 1-2
-        ctrldata |= mode
-        self.write(BME280Register.CTRL_MEAS, ctrldata)
+        ctrldata |= mode.value
+        self.write(BME280Register.CTRL_MEAS.value, ctrldata)
 
     @property
     def standby_time(self):
@@ -182,14 +182,14 @@ class BME280Sensor(Wire):
 
     @standby_time.setter
     def standby_time(self, standby_time):
-        if standby_time > 0b111:
+        if standby_time.value > 0b111:
             standby_time = BME280StandbyTime.MS__50
         self._standby_time = standby_time
 
-        ctrldata = self.read(BME280Register.CONFIG)
+        ctrldata = self.read(BME280Register.CONFIG.value)
         ctrldata &= ~( (1<<7) | (1<<6) | (1<<5) )  # Create mask for bits 5-7
         ctrldata |= (standby_time << 5)  # Move to bits 5-7
-        self.write(BME280Register.CONFIG, ctrldata)
+        self.write(BME280Register.CONFIG.value, ctrldata)
 
     @property
     def filter(self):
@@ -201,10 +201,10 @@ class BME280Sensor(Wire):
             filter_setting = BME280Filter.OFF
         self._filter = filter_setting
 
-        ctrldata = self.read(BME280Register.CONFIG)
+        ctrldata = self.read(BME280Register.CONFIG.value)
         ctrldata &= ~( (1<<4) | (1<<3) | (1<<2) )  # Create mask for bits 2-4
         ctrldata |= (filter_setting << 2)  # Move to bits 2-4
-        self.write(BME280Register.CONFIG, ctrldata)
+        self.write(BME280Register.CONFIG.value, ctrldata)
 
     def set_oversample(self, attr, amount=None):
         if amount is not None:
@@ -213,29 +213,29 @@ class BME280Sensor(Wire):
         orig_mode = self.mode
         self.mode = BME280Mode.SLEEP
 
-        ctrldata = self.read(BME280Register.CTRL_MEAS)
+        ctrldata = self.read(BME280Register.CTRL_MEAS.value)
 
-        bit_a = int(getattr(OverSampleOffset, attr.capitalize()))
+        bit_a = int(getattr(OverSampleOffset, attr.capitalize()).value)
         bit_b = bit_a + 1
         bit_c = bit_b + 1
 
         ctrldata &= ~( (1<<bit_c) | (1<<bit_b) | (1<<bit_a) )  # Create mask for bits 2-4
         ctrldata |= (getattr(self, f"{attr}_oversample") << bit_a)  # Move to bits 2-4
-        self.write(BME280Register.CTRL_MEAS, ctrldata)
+        self.write(BME280Register.CTRL_MEAS.value, ctrldata)
 
         self.mode = orig_mode
 
     def is_measuring(self):
-        return self.read(BME280Register.STAT) & (1<<3)
+        return self.read(BME280Register.STAT.value) & (1<<3)
 
     def reset(self):
-        self.write(BME280Register.RST, 0xB6)
+        self.write(BME280Register.RST.value, 0xB6)
 
     # Pressure
 
     @property
     def pressure(self):
-        buffer = self.read(BME280Register.PRESSURE_MSB, 3)
+        buffer = self.read(BME280Register.PRESSURE_MSB.value, 3)
         adc_p = (int(buffer[0]) << 12) | \
                 (int(buffer[1]) << 4) | \
                 ((int(buffer[2]) >> 4) & 0x0F)
@@ -275,7 +275,7 @@ class BME280Sensor(Wire):
 
     @property
     def humidity(self):
-        buffer = self.read(BME280Register.HUMIDITY_MSB, 2)
+        buffer = self.read(BME280Register.HUMIDITY_MSB.value, 2)
         adc_h = (buffer[0] << 8) | buffer[1]
 
         var1 = self.t_fine - 76800
@@ -329,7 +329,7 @@ class BME280Sensor(Wire):
 
     @property
     def celsius(self):
-        buffer = self.read(BME280Register.TEMPERATURE_MSB, 3)
+        buffer = self.read(BME280Register.TEMPERATURE_MSB.value, 3)
         adc_t = (int(buffer[0]) << 12) | \
                 (int(buffer[1]) << 4) | \
                 ((int(buffer[2]) >> 4) & 0x0F)
