@@ -4,8 +4,8 @@
 
 
 import time
-from enum import Enum
 
+from growbox.enum import Enum
 from growbox.wire import Wire
 
 
@@ -153,15 +153,15 @@ class UVSensor(Wire):
 
     def _getter(self, section, etype):
         mask, shift = self._getsection(section)
-        data = self.read(VEML6075Registers.UV_CONF.value)
-        return etype((data & mask.value) >> shift.value)
+        data = self.read(VEML6075Registers.UV_CONF)
+        return etype((data & mask) >> shift)
 
     def _setter(self, section, data):
         mask, shift = self._getsection(section)
-        config = self.read(VEML6075Registers.UV_CONF.value)
-        config &= ~(mask.value)
-        config |= data.value << shift.value
-        config = self.write(VEML6075Registers.UV_CONF.value, config)
+        config = self.read(VEML6075Registers.UV_CONF)
+        config &= ~(mask)
+        config |= data << shift
+        config = self.write(VEML6075Registers.UV_CONF, config)
 
     @property
     def integration_time(self):
@@ -170,8 +170,8 @@ class UVSensor(Wire):
     @integration_time.setter
     def integration_time(self, integration_time):
         self._setter('UV_IT', integration_time)
-        self._a_responsivity = self.uva_responsivity[integration_time.value]
-        self._b_responsivity = self.uvb_responsivity[integration_time.value]
+        self._a_responsivity = self.uva_responsivity[integration_time]
+        self._b_responsivity = self.uvb_responsivity[integration_time]
 
     @property
     def resolution(self):  # "HighDynamic"
