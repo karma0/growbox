@@ -11,21 +11,21 @@ from growbox.wire import Wire
 
 
 class CSS811Register(Enum):
-    STATUS 0x00
-    MEAS_MODE 0x01
-    ALG_RESULT_DATA 0x02
-    RAW_DATA 0x03
-    ENV_DATA 0x05
-    NTC 0x06
-    THRESHOLDS 0x10
-    BASELINE 0x11
-    HW_ID 0x20
-    HW_VERSION 0x21
-    FW_BOOT_VERSION 0x23
-    FW_APP_VERSION 0x24
-    ERROR_ID 0xE0
-    APP_START 0xF4
-    SW_RESET 0xFF
+    STATUS          = 0x00
+    MEAS_MODE       = 0x01
+    ALG_RESULT_DATA = 0x02
+    RAW_DATA        = 0x03
+    ENV_DATA        = 0x05
+    NTC             = 0x06
+    THRESHOLDS      = 0x10
+    BASELINE        = 0x11
+    HW_ID           = 0x20
+    HW_VERSION      = 0x21
+    FW_BOOT_VERSION = 0x23
+    FW_APP_VERSION  = 0x24
+    ERROR_ID        = 0xE0
+    APP_START       = 0xF4
+    SW_RESET        = 0xFF
 
 
 class CSS811Error(Enum):

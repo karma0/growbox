@@ -80,7 +80,7 @@ class UVSensor(Wire):
     """
     address = 0x10
 
-    status = VEML6075Error.ERROR_UNDEFINED
+    status = VEML6075Error.UNDEFINED
 
     raw_dark = 0
     raw_ir = 0

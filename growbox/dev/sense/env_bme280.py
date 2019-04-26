@@ -173,7 +173,7 @@ class BME280Sensor(Wire):
 
         ctrldata = self.read(BME280Register.CTRL_MEAS)
         ctrldata &= ~( (1<<1) | (1<<0) )  # Create mask for bits 1-2
-        ctrldata |= mode
+        ctrldata |= mode.value
         self.write(BME280Register.CTRL_MEAS, ctrldata)
 
     @property
