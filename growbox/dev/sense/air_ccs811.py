@@ -137,7 +137,7 @@ class CCS811Sensor(Wire):
     def environment(self):
         return self._environment
 
-    @property.setter
+    @environment.setter
     def environment(self, environment):
         self._environment = environment
         humidity = self._environment.humidity * 1000

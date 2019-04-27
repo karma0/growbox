@@ -215,7 +215,7 @@ class BME280Sensor(Wire):
 
         ctrldata = self.read(BME280Register.CTRL_MEAS)
 
-        bit_a = int(getattr(OverSampleOffset, attr.capitalize()))
+        bit_a = int(getattr(OverSampleOffset, attr.upper()))
         bit_b = bit_a + 1
         bit_c = bit_b + 1
 

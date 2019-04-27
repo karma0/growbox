@@ -161,7 +161,7 @@ class UVSensor(Wire):
         config = self.read(VEML6075Registers.UV_CONF)
         config &= ~(mask)
         config |= data << shift
-        config = self.write(VEML6075Registers.UV_CONF, config)
+        self.write(VEML6075Registers.UV_CONF, config)
 
     @property
     def integration_time(self):
