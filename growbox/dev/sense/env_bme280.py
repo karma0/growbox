@@ -132,7 +132,7 @@ class BME280Sensor(Wire):
 
         # Reading all compensation data into self.calibration_data
         for reg in BME280CompensationRegister:
-            sreg = str(reg)
+            sreg = str(reg).split('.')[-1]
             k_sreg = sreg[:-4]
 
             if sreg == 'H1' or sreg == 'H3' or sreg == 'H6':
