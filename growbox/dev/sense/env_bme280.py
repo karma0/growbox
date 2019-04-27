@@ -220,7 +220,7 @@ class BME280Sensor(Wire):
         bit_c = bit_b + 1
 
         ctrldata &= ~( (1<<bit_c) | (1<<bit_b) | (1<<bit_a) )  # Create mask for bits 2-4
-        ctrldata |= (getattr(self, f"{attr}_oversample") << bit_a)  # Move to bits 2-4
+        ctrldata |= (getattr(self, f"_{attr}_oversample") << bit_a)  # Move to bits 2-4
         self.write(BME280Register.CTRL_MEAS, ctrldata)
 
         self.mode = orig_mode

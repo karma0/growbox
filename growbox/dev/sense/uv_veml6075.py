@@ -147,8 +147,8 @@ class UVSensor(Wire):
         return VEML6075Error.SUCCESS
 
     def _getsection(self, section):
-        mask = getattr(ConfMask, section)
-        shift = getattr(ConfShift, section)
+        mask = getattr(ConfMask, section).value
+        shift = getattr(ConfShift, section).value
         return (mask, shift)
 
     def _getter(self, section, etype):

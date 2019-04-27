@@ -67,7 +67,6 @@ class CCS811Sensor(Wire):
 
     def begin(self):
         reset_key = [0x11, 0xE5, 0x72, 0x8A]
-        self.begin_core()
         self.write(CSS811Register.SW_RESET, reset_key)
 
         temp = 0
