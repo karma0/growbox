@@ -157,9 +157,9 @@ class CCS811Sensor(Wire):
         self.temperature = log(self.resistance)
         self.temperature = 1 / (
             0.001129148 + (
-                0.000234125 * temperature
+                0.000234125 * self.temperature
             ) + (
-                0.0000000876741 * (temperature ** 3)
+                0.0000000876741 * (self.temperature ** 3)
             )
         )
         self.temperature -= 273.15  # Convert Kelvin to Celsius

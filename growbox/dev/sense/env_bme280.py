@@ -114,6 +114,8 @@ class BME280Sensor(Wire):
     _standby_time = BME280StandbyTime.MS__50
     _filter = BME280Filter.COEFF_2
 
+    t_fine = None
+
     _temperature_oversample = BME280SampleAmount.COEFF_1
     _humidity_oversample = BME280SampleAmount.COEFF_1
     _pressure_oversample = BME280SampleAmount.COEFF_1

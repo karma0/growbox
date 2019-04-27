@@ -170,8 +170,8 @@ class UVSensor(Wire):
     @integration_time.setter
     def integration_time(self, integration_time):
         self._setter('UV_IT', integration_time)
-        self._a_responsivity = self.uva_responsivity[integration_time]
-        self._b_responsivity = self.uvb_responsivity[integration_time]
+        self._a_responsivity = self.uva_responsivity[integration_time.value]
+        self._b_responsivity = self.uvb_responsivity[integration_time.value]
 
     @property
     def resolution(self):  # "HighDynamic"
