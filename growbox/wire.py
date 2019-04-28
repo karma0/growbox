@@ -119,5 +119,7 @@ class Wire:
         """
         if size is not None:
             size *= 2  # we're counting bytes as words
+        else:
+            size = 2
 
         return self.bytes2word(self.read(offset=offset, size=size))
