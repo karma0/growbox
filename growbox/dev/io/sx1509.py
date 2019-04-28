@@ -365,10 +365,10 @@ class SX1509IO(Wire):
         if getattr(SX1509Register, f"T_FALL_{pin}") != 0xFF:
             self.write(getattr(SX1509Register, f"T_FALL_{pin}"), time_fall);
 
-    def clock(osc_src, osc_divider, osc_pin_func, osc_freq_out):
-        self.config_clock(osc_src, osc_divider, osc_pin_func, osc_freq_out):
+    def clock(self, osc_src, osc_divider, osc_pin_func, osc_freq_out):
+        self.config_clock(osc_src, osc_divider, osc_pin_func, osc_freq_out)
 
-    def config_clock(osc_src, osc_divider, osc_pin_func, osc_freq_out):
+    def config_clock(self, osc_src, osc_divider, osc_pin_func, osc_freq_out):
         # RegClock constructed as follows:
         #    6:5 - Oscillator frequency souce
         #        00: off, 01: external input, 10: internal 2MHz, 1: reserved
@@ -376,10 +376,10 @@ class SX1509IO(Wire):
         #        0: input, 1 ouptut
         #    3:0 - Frequency of oscout pin
         #        0: LOW, 0xF: high, else fOSCOUT = FoSC/(2^(RegClock[3:0]-1))
-        osc_source = (osc_source & 0b11) << 5  # 2-bit value, bits 6:5
+        osc_source = (osc_src & 0b11) << 5  # 2-bit value, bits 6:5
         osc_pin_func = (osc_pin_func & 1) << 4  # 1-bit value bit 4
         osc_freq_out = (osc_freq_out & 0b1111)  # 4-bit value, bits 3:0
-        clock = osc_source | osc_pin_function | osc_freq_out
+        clock = osc_source | osc_pin_func | osc_freq_out
         self.write(SX1509Register.CLOCK, clock)
 
         # Config RegMisc[6:4] with oscDivider
