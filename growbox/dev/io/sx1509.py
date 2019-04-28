@@ -337,31 +337,31 @@ class SX1509IO(Wire):
         min_intensity &= 0x07  # 3-bit value
 
         # Write the time on
-	# 1-15:  TON = 64 * time_on * (255/self._clk)
-	# 16-31: TON = 512 * time_on * (255/self._clk)
-	self.write(getattr(SX1509Register, f"T_ON_{pin}", time_on))
+        # 1-15:  TON = 64 * time_on * (255/self._clk)
+        # 16-31: TON = 512 * time_on * (255/self._clk)
+        self.write(getattr(SX1509Register, f"T_ON_{pin}", time_on))
 
         # Write the time/intensity off register
-	# 1-15:  TOFF = 64 * time_off * (255/ClkX)
-	# 16-31: TOFF = 512 * time_off * (255/ClkX)
-	# linear Mode - IOff = 4 * min_intensity
-	# log mode - Ioff = f(4 * min_intensity)
-	self.write(getattr(SX1509Register, f"OFF_{pin}"),
+        # 1-15:  TOFF = 64 * time_off * (255/ClkX)
+        # 16-31: TOFF = 512 * time_off * (255/ClkX)
+        # linear Mode - IOff = 4 * min_intensity
+        # log mode - Ioff = f(4 * min_intensity)
+        self.write(getattr(SX1509Register, f"OFF_{pin}"),
                     (time_off << 3) | min_intensity)
 
-	self.write(getattr(SX1509Register, f"I_ON_{pin}"), max_intensity)
+        self.write(getattr(SX1509Register, f"I_ON_{pin}"), max_intensity)
 
         # Write regTRise
-	# 0: Off
-	# 1-15:  TRise =      (regIOn - (4 * min_intensity)) * time_rise * (255/_clk)
-	# 16-31: TRise = 16 * (regIOn - (4 * min_intensity)) * time_rise * (255/_clk)
+        # 0: Off
+        # 1-15:  TRise =      (regIOn - (4 * min_intensity)) * time_rise * (255/_clk)
+        # 16-31: TRise = 16 * (regIOn - (4 * min_intensity)) * time_rise * (255/_clk)
         if getattr(SX1509Register, f"T_RISE_{pin}") != 0xFF:
             self.write(getattr(SX1509Register, f"T_RISE_{pin}"), time_rise);
 
-	# Write regTFall
-	# 0: off
-	# 1-15:  TFall =      (regIOn - (4 * min_intensity)) * time_fall * (255/clk)
-	# 16-31: TFall = 16 * (regIOn - (4 * min_intensity)) * time_fall * (255/clk)
+        # Write regTFall
+        # 0: off
+        # 1-15:  TFall =      (regIOn - (4 * min_intensity)) * time_fall * (255/clk)
+        # 16-31: TFall = 16 * (regIOn - (4 * min_intensity)) * time_fall * (255/clk)
         if getattr(SX1509Register, f"T_FALL_{pin}") != 0xFF:
             self.write(getattr(SX1509Register, f"T_FALL_{pin}"), time_fall);
 
@@ -370,28 +370,28 @@ class SX1509IO(Wire):
 
     def config_clock(osc_src, osc_divider, osc_pin_func, osc_freq_out):
         # RegClock constructed as follows:
-	#	6:5 - Oscillator frequency souce
-	#		00: off, 01: external input, 10: internal 2MHz, 1: reserved
-	#	4 - OSCIO pin function
-	#		0: input, 1 ouptut
-	#	3:0 - Frequency of oscout pin
-	#		0: LOW, 0xF: high, else fOSCOUT = FoSC/(2^(RegClock[3:0]-1))
-	osc_source = (osc_source & 0b11) << 5  # 2-bit value, bits 6:5
-	osc_pin_func = (osc_pin_func & 1) << 4  # 1-bit value bit 4
-	osc_freq_out = (osc_freq_out & 0b1111)  # 4-bit value, bits 3:0
-	clock = osc_source | osc_pin_function | osc_freq_out
-	self.write(SX1509Register.CLOCK, clock)
+        #    6:5 - Oscillator frequency souce
+        #        00: off, 01: external input, 10: internal 2MHz, 1: reserved
+        #    4 - OSCIO pin function
+        #        0: input, 1 ouptut
+        #    3:0 - Frequency of oscout pin
+        #        0: LOW, 0xF: high, else fOSCOUT = FoSC/(2^(RegClock[3:0]-1))
+        osc_source = (osc_source & 0b11) << 5  # 2-bit value, bits 6:5
+        osc_pin_func = (osc_pin_func & 1) << 4  # 1-bit value bit 4
+        osc_freq_out = (osc_freq_out & 0b1111)  # 4-bit value, bits 3:0
+        clock = osc_source | osc_pin_function | osc_freq_out
+        self.write(SX1509Register.CLOCK, clock)
 
         # Config RegMisc[6:4] with oscDivider
-	# 0: off, else ClkX = fOSC / (2^(RegMisc[6:4] -1))
-	osc_divider = constrain(osc_divider, 1, 7)
-	self._clk = 2000000.0 / (1 << (osc_divider - 1))  # Update private clock variable
-	osc_divider = (osc_divider & 0b111) << 4  # 3-bit value, bits 6:4
+        # 0: off, else ClkX = fOSC / (2^(RegMisc[6:4] -1))
+        osc_divider = constrain(osc_divider, 1, 7)
+        self._clk = 2000000.0 / (1 << (osc_divider - 1))  # Update private clock variable
+        osc_divider = (osc_divider & 0b111) << 4  # 3-bit value, bits 6:4
 
-	misc = self.read(SX1509Register.MISC);
-	misc &= ~(0b111 << 4)
-	misc |= osc_divider
-	self.write(SX1509Register.MISC, misc);
+        misc = self.read(SX1509Register.MISC);
+        misc &= ~(0b111 << 4)
+        misc |= osc_divider
+        self.write(SX1509Register.MISC, misc);
 
     def calculate_led_t_reg(self, ms):
         if self._clk == 0:
