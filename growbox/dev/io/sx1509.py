@@ -129,7 +129,7 @@ class SX1509Register(Enum):
     TEST_1              = 0x7E    #    RegTest1 Test register 0000 0000
     TEST_2              = 0x7F    #    RegTest2 Test register 0000 0000
 
-class IOModes(Enum):
+class IOMode(Enum):
     INPUT             = 0x00
     OUTPUT            = 0x01
     INPUT_PULLUP      = 0x02
@@ -182,7 +182,7 @@ class SX1509IO(Wire):
                 misc &= ~(1 << 2)
                 self.write(SX1509Register.MISC, misc)
 
-            self.pin_mode(self.pin_reset, IOModes.OUTPUT)
+            self.pin_mode(self.pin_reset, IOMode.OUTPUT)
             self.digital_write(self.reset_pin, IOLogic.LOW)
             time.sleep(.01)  # Wait for the pin to settle
             self.digital_write(self.reset_pin, IOLogic.HIGH)
@@ -193,7 +193,7 @@ class SX1509IO(Wire):
             self.write(SX1509Register.RESET, 0x34)
 
     def pin_dir(self, pin, iomode):
-        if iomode == IOModes.OUTPUT or iomode == IOModes.ANALOG_OUTPUT:
+        if iomode == IOMode.OUTPUT or iomode == IOMode.ANALOG_OUTPUT:
             mode = 0
         else:
             mode = 1
@@ -205,9 +205,9 @@ class SX1509IO(Wire):
             dirb &= ~(1 << pin)
         self.write_word(SX1509Register.DIR_B, dirb)
 
-        if iomode == IOModes.INPUT_PULLUP:
+        if iomode == IOMode.INPUT_PULLUP:
             self.write_pin(pin, IOLogic.HIGH)
-        elif iomode == IOModes.ANALOG_OUTPUT:
+        elif iomode == IOMode.ANALOG_OUTPUT:
             self.led_driver_init(pin)
 
     def pin_mode(self, pin, iomode):
