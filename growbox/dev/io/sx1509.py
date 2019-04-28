@@ -144,9 +144,9 @@ class IOLogic(Enum):
     HIGH = 0x01
 
 
-class UVSensor(Wire):
+class SX1509IO(Wire):
     """
-    SparkFun's QWIIC VEML6075 UV sensor and corresponding interface.
+    SparkFun's QWIIC SX1509 IO breakout board and corresponding interface.
     """
     # Alternates can also be 0x70 and 0x71, respectively
     address = 0x3E
