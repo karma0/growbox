@@ -365,7 +365,7 @@ class SX1509IO(Wire):
         if getattr(SX1509Register, f"T_FALL_{pin}") != 0xFF:
             self.write(getattr(SX1509Register, f"T_FALL_{pin}"), time_fall);
 
-    def clock(self, osc_src, osc_divider, osc_pin_func, osc_freq_out):
+    def clock(self, osc_src=2, osc_divider=0, osc_pin_func=0, osc_freq_out=1):
         self.config_clock(osc_src, osc_divider, osc_pin_func, osc_freq_out)
 
     def config_clock(self, osc_src, osc_divider, osc_pin_func, osc_freq_out):
