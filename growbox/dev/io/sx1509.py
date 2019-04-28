@@ -312,8 +312,8 @@ class SX1509IO(Wire):
         self.setup_blink(
             pin, on_reg, off_reg, max_intensity, min_intensity, 0, 0)
 
-    def breathe(self, pin, time_on, time_off, rise, fall, max_intensity,
-                min_intensity, log=False):
+    def breathe(self, pin, time_on, time_off, rise, fall, max_intensity=255,
+                min_intensity=0, log=False):
         min_intensity = constrain(min_intensity, 0, 7)
 
         on_reg = self.calculate_led_t_reg(time_on)
@@ -409,7 +409,7 @@ class SX1509IO(Wire):
             return on1
         return on2
 
-    def calculate_slope_reg(ms, max_intensity, min_intensity):
+    def calculate_slope_reg(self, ms, max_intensity, min_intensity):
         if self._clk == 0:
             return 0
 
