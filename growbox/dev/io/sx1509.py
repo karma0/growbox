@@ -176,7 +176,7 @@ class SX1509IO(Wire):
             return 1
         return 0
 
-    def reset(self, hardware):
+    def reset(self, hardware=False):
         if hardware:
             misc = self.read(SX1509Register.MISC)
             if misc & (1 << 2):
@@ -194,10 +194,9 @@ class SX1509IO(Wire):
             self.write(SX1509Register.RESET, 0x34)
 
     def pin_dir(self, pin, iomode):
+        mode = 1
         if iomode == IOMode.OUTPUT or iomode == IOMode.ANALOG_OUTPUT:
             mode = 0
-        else:
-            mode = 1
 
         dirb = self.read_word(SX1509Register.DIR_B)
         if mode:
@@ -280,8 +279,8 @@ class SX1509IO(Wire):
             misc |= 1 << 7
             misc |= 1 << 3
         else:  # set linear mode
-            misc |= ~(1 << 7)
-            misc |= ~(1 << 3)
+            misc &= ~(1 << 7)
+            misc &= ~(1 << 3)
 
         # Use config clock to setup the clock divider
         if self._clk == 0:
