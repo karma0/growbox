@@ -129,6 +129,7 @@ class SX1509Register(Enum):
     TEST_1              = 0x7E    #    RegTest1 Test register 0000 0000
     TEST_2              = 0x7F    #    RegTest2 Test register 0000 0000
 
+
 class IOMode(Enum):
     INPUT             = 0x00
     OUTPUT            = 0x01
@@ -169,13 +170,13 @@ class SX1509IO(Wire):
         else:
             self.reset(0)
 
-        data = self.read(SX1509Register.INTERRUPT_MASK_A, 2)
-        if data == [0xFF, 0x00]:
+        data = self.read_word(SX1509Register.INTERRUPT_MASK_A)
+        if data == 0xFF00:
             self.clock(self.internal_clock_2MHz)
             return 1
         return 0
 
-    def reset(self, hardware):
+    def reset(self, hardware=False):
         if hardware:
             misc = self.read(SX1509Register.MISC)
             if misc & (1 << 2):
@@ -183,9 +184,9 @@ class SX1509IO(Wire):
                 self.write(SX1509Register.MISC, misc)
 
             self.pin_mode(self.pin_reset, IOMode.OUTPUT)
-            self.digital_write(self.reset_pin, IOLogic.LOW)
+            self.digital_write(self.pin_reset, IOLogic.LOW)
             time.sleep(.01)  # Wait for the pin to settle
-            self.digital_write(self.reset_pin, IOLogic.HIGH)
+            self.digital_write(self.pin_reset, IOLogic.HIGH)
 
         else:
             # Software reset sequence
@@ -193,10 +194,9 @@ class SX1509IO(Wire):
             self.write(SX1509Register.RESET, 0x34)
 
     def pin_dir(self, pin, iomode):
+        mode = 1
         if iomode == IOMode.OUTPUT or iomode == IOMode.ANALOG_OUTPUT:
             mode = 0
-        else:
-            mode = 1
 
         dirb = self.read_word(SX1509Register.DIR_B)
         if mode:
@@ -215,7 +215,8 @@ class SX1509IO(Wire):
 
     def write_pin(self, pin, iologic):
         dirb = self.read_word(SX1509Register.DIR_B)
-        if (0xFFFF ^ dirb) & (1 << pin):  # If the pin is an output, write high/low
+        # If the pin is an output, write high/low
+        if (0xFFFF ^ dirb) & (1 << pin):
             reg_data = self.read_word(SX1509Register.DATA_B)
             if iologic:
                 reg_data |= 1 << pin
@@ -278,8 +279,8 @@ class SX1509IO(Wire):
             misc |= 1 << 7
             misc |= 1 << 3
         else:  # set linear mode
-            misc |= ~(1 << 7)
-            misc |= ~(1 << 3)
+            misc &= ~(1 << 7)
+            misc &= ~(1 << 3)
 
         # Use config clock to setup the clock divider
         if self._clk == 0:
@@ -326,7 +327,7 @@ class SX1509IO(Wire):
                          rise_time, fall_time, log)
 
     def setup_blink(self, pin, time_on, time_off, max_intensity, min_intensity,
-            time_rise, time_fall, log=False):
+                    time_rise, time_fall, log=False):
         self.led_driver_init(pin, log)
 
         # Should be 5-bit values
@@ -347,7 +348,7 @@ class SX1509IO(Wire):
         # linear Mode - IOff = 4 * min_intensity
         # log mode - Ioff = f(4 * min_intensity)
         self.write(getattr(SX1509Register, f"OFF_{pin}"),
-                    (time_off << 3) | min_intensity)
+                   (time_off << 3) | min_intensity)
 
         self.write(getattr(SX1509Register, f"I_ON_{pin}"), max_intensity)
 
@@ -356,14 +357,14 @@ class SX1509IO(Wire):
         # 1-15:  TRise =      (regIOn - (4 * min_intensity)) * time_rise * (255/_clk)
         # 16-31: TRise = 16 * (regIOn - (4 * min_intensity)) * time_rise * (255/_clk)
         if getattr(SX1509Register, f"T_RISE_{pin}") != 0xFF:
-            self.write(getattr(SX1509Register, f"T_RISE_{pin}"), time_rise);
+            self.write(getattr(SX1509Register, f"T_RISE_{pin}"), time_rise)
 
         # Write regTFall
         # 0: off
         # 1-15:  TFall =      (regIOn - (4 * min_intensity)) * time_fall * (255/clk)
         # 16-31: TFall = 16 * (regIOn - (4 * min_intensity)) * time_fall * (255/clk)
         if getattr(SX1509Register, f"T_FALL_{pin}") != 0xFF:
-            self.write(getattr(SX1509Register, f"T_FALL_{pin}"), time_fall);
+            self.write(getattr(SX1509Register, f"T_FALL_{pin}"), time_fall)
 
     def clock(self, osc_src=2, osc_divider=0, osc_pin_func=0, osc_freq_out=1):
         self.config_clock(osc_src, osc_divider, osc_pin_func, osc_freq_out)
@@ -388,10 +389,10 @@ class SX1509IO(Wire):
         self._clk = 2000000.0 / (1 << (osc_divider - 1))  # Update private clock variable
         osc_divider = (osc_divider & 0b111) << 4  # 3-bit value, bits 6:4
 
-        misc = self.read(SX1509Register.MISC);
+        misc = self.read(SX1509Register.MISC)
         misc &= ~(0b111 << 4)
         misc |= osc_divider
-        self.write(SX1509Register.MISC, misc);
+        self.write(SX1509Register.MISC, misc)
 
     def calculate_led_t_reg(self, ms):
         if self._clk == 0:
