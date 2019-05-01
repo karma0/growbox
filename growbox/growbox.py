@@ -29,3 +29,8 @@ class ApplicationBuilder:
 
     def build_uv_sensor(self, *args, address=None, **kwargs):
         return self.build_generic_device(address, *args, cls=UVSensor, **kwargs)
+
+
+class GrowBox:
+    devices = [
+    ]

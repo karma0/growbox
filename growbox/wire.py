@@ -18,7 +18,7 @@ class Wire:
     address = 0  # type: int
     jump_address = 0  # type: int
 
-    def __init__(self, address=None, channel=1, addr_jmp=False, **kwargs):
+    def __init__(self, address=None, port=1, addr_jmp=False, **kwargs):
         # Set address of i2c to appropriate address, or override completely
         if address is not None:
             if address == 0:

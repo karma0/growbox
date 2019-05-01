@@ -82,6 +82,11 @@ class UVSensor(Wire):
 
     status = VEML6075Error.UNDEFINED
 
+    # Primary configuration
+    integration_time = UVIntegrationTime.IT_800MS
+    resolution = VEML6075Resolution.HIGH
+    autoforce = VEML6075AutoForce.DISABLE
+
     raw_dark = 0
     raw_ir = 0
     raw_viz = 0
@@ -132,19 +137,9 @@ class UVSensor(Wire):
     _last_index = 0.0
     _hd_enabled = False
 
-    def begin(self, integration_time=None):
-        if integration_time is not None:
-            if not isinstance(integration_time, UVIntegrationTime):
-                raise ValueError("Invalid UVIntegrationTime as a "
-                                 f"integration_time: {integration_time}")
-            self.integration_time = integration_time
-        else:
-            self.integration_time = UVIntegrationTime.IT_100MS
-
-        self.resolution = VEML6075Resolution.NORMAL
-        self.autoforce = VEML6075AutoForce.DISABLE
-
-        return VEML6075Error.SUCCESS
+    def begin(self):
+        self.status = VEML6075Error.SUCCESS
+        return self.status
 
     def _getsection(self, section):
         mask = getattr(ConfMask, section).value

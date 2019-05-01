@@ -161,10 +161,54 @@ class SX1509IO(Wire):
 
     _clk = 0
 
-    def begin(self, reset_pin=None):
-        if reset_pin is not None:
-            self.pin_reset = reset_pin
+    commands = [
+        'pwm0',
+        'pwm1',
+        'pwm2',
+        'pwm3',
+        'pwm4',
+        'pwm5',
+        'pwm6',
+        'pwm7',
+        'pwm8',
+        'pwm9',
+        'pwm10',
+        'pwm11',
+        'pwm12',
+        'pwm13',
+        'pwm14',
+        'pwm15',
 
+        'blink0',
+        'blink1',
+        'blink2',
+        'blink3',
+        'blink4',
+        'blink5',
+        'blink6',
+        'blink7',
+        'blink8',
+        'blink9',
+        'blink10',
+        'blink11',
+        'blink12',
+        'blink13',
+        'blink14',
+        'blink15',
+
+        'breathe4',
+        'breathe5',
+        'breathe6',
+        'breathe7',
+        'breathe12',
+        'breathe13',
+        'breathe14',
+        'breathe15',
+    ]
+
+    status = []
+
+    def begin(self):
         if self.pin_reset != 255:
             self.reset(1)
         else:
@@ -300,9 +344,12 @@ class SX1509IO(Wire):
         data &= ~(1 << pin)
         self.write_word(SX1509Register.DATA_B, data)
 
+        self.status[pin] = 0
+
     def pwm(self, pin, intensity):
         # Just intensity or relative to log(intensity)
         self.write(getattr(SX1509Register, f"I_ON_{pin}"), intensity)
+        self.status[pin] = str(intensity)
 
     def analog_write(self, pin, intensity):
         self.pwm(pin, intensity)
@@ -312,9 +359,10 @@ class SX1509IO(Wire):
         off_reg = self.calculate_led_t_reg(time_off)
         self.setup_blink(
             pin, on_reg, off_reg, max_intensity, min_intensity, 0, 0)
+        self.status[pin] = '1/0'
 
-    def breathe(self, pin, time_on, time_off, rise, fall, max_intensity=255,
-                min_intensity=0, log=False):
+    def breathe(self, pin, time_on=1000, time_off=1000, rise=1000, fall=1000,
+                max_intensity=255, min_intensity=0, log=False):
         min_intensity = constrain(min_intensity, 0, 7)
 
         on_reg = self.calculate_led_t_reg(time_on)
@@ -325,6 +373,7 @@ class SX1509IO(Wire):
 
         self.setup_blink(pin, on_reg, off_reg, max_intensity, min_intensity,
                          rise_time, fall_time, log)
+        self.status[pin] = 'sin()'
 
     def setup_blink(self, pin, time_on, time_off, max_intensity, min_intensity,
                     time_rise, time_fall, log=False):

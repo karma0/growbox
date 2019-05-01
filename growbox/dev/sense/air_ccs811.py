@@ -65,6 +65,13 @@ class CCS811Sensor(Wire):
 
     start_time = time.time()
 
+    def __init__(self, *args, **kwargs):
+        env = kwargs.pop('environment', None)
+        if env is not None:
+            self.environment = env
+
+        super().__init__(*args, **kwargs)
+
     def begin(self):
         reset_key = [0x11, 0xE5, 0x72, 0x8A]
         self.write(CSS811Register.SW_RESET, reset_key)

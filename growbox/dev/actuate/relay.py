@@ -30,6 +30,25 @@ class QuadRelay(Wire):
         0x04,
     ]
 
+    commands = [
+        'on1',
+        'on2',
+        'on3',
+        'on4',
+
+        'off1',
+        'off2',
+        'off3',
+        'off4',
+
+        'toggle1',
+        'toggle2',
+        'toggle3',
+        'toggle4',
+    ]
+
+    status = []
+
     status_results = {
         0: False,
         15: True,
@@ -59,7 +78,7 @@ class QuadRelay(Wire):
         """Toggle a relay by index starting at 0."""
         self.write(self.relay_addresses[relay_id])
 
-    def status(self, relay_id, retry=3):
+    def get_status_by_id(self, relay_id, retry=3):
         """Check a relay status by index starting at 0."""
         if retry == 0:
             return None
@@ -68,9 +87,9 @@ class QuadRelay(Wire):
             return self.status_results[
                 self.read(self.status_offset + relay_id)]
         except KeyError:
-            return self.status(relay_id, retry=(retry - 1))
+            return self.get_status_by_id(relay_id, retry=(retry - 1))
 
-    def all_status(self, retry=3):
+    def get_status(self, retry=3):
         """Check all relays status."""
         try:
             return [
@@ -78,4 +97,8 @@ class QuadRelay(Wire):
                 self.read(self.status_offset, len(self.relay_addresses))
             ]
         except KeyError:
-            return self.all_status(retry=(retry - 1))
+            return self.get_status(retry=(retry - 1))
+
+    @property
+    def status(self):
+        return self.get_status()
