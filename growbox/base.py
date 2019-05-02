@@ -24,11 +24,11 @@ class DeviceBase:
                              port=port, address=address, addr_jump=addr_jump,
                              **kwargs)
 
-    def override_command(self, command, name):
+    def alias(self, command, name, *args, **kwargs):
         """
         Cosmetic function to rename a device's actions (commands) by name.
         """
-        self.command_overrides[command] = name
+        self.command_overrides[command] = (name, *args, **kwargs)
 
     def begin(self):
         """Setup the device and its applications"""
@@ -78,8 +78,9 @@ class DeviceBase:
         """
         # Resolve overriden names first
         if command in self.command_overrides:
-            command = self.command_overrides[command]
+            command, _args, _kwargs = self.command_overrides[command]
+            args = _args + args
+            kwargs = _kwargs.update(kwargs)
 
-        # TODO: Generate a function call from command name
         cmd = getattr(self, command, getattr(self.device, command, None))
         return cmd(*args, **kwargs)

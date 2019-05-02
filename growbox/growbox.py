@@ -5,30 +5,46 @@
 
 from growbox.wire import Wire
 
-from growbox.dev.actuate.relay import *
+# Device facades
+from growbox.actuation.relay import Relay
+from growbox.io import IOExpander
 
-from growbox.dev.sense.env_bme280 import *
-from growbox.dev.sense.air_ccs811 import *
-from growbox.dev.sense.uv_veml6075 import *
+from growbox.sensory.env import EnvironmentSensor
+from growbox.sensory.air import AirSensor
+from growbox.sensory.uv import UVSensor
 
 
 class ApplicationBuilder:
     """Create a useable application."""
-    devices: list = []
+    devices: dict = {
+        IOExpander,
+        Relay,
+        EnvironmentSensor,
+        AirSensor,
+        UVSensor
+    }
+    _devinsts: dict = {}
 
     def build_generic_device(self, address, *args, cls=Wire, **kwargs):
         device = cls(*args, address=address, **kwargs)
-        self.devices.append(device)
+        self._devinsts[cls.__name__] = device
         return device
 
-    #def build_switch(self, *args, address=None, **kwargs):
-    #    return self.build_generic_device(address, *args, cls=Relay, **kwargs)
+    def build_app(self, devices=None):
+        if devices is not None:
+            assert isinstance(devices, dict)
+            # facade.__name__: growbox.wire.Wire type
 
-    def build_quad_switch(self, *args, address=None, **kwargs):
-        return self.build_generic_device(address, *args, cls=QuadRelay, **kwargs)
+            self.devices = devices
 
-    def build_uv_sensor(self, *args, address=None, **kwargs):
-        return self.build_generic_device(address, *args, cls=UVSensor, **kwargs)
+        for facade_name, device in self.devices:
+            # TODO: Work out integration
+            pass
+
+
+    def create_action(self, device, name, action, *args, **kwargs):
+        # TODO: Refactor devices, and add alias to specific device action
+        pass
 
 
 class GrowBox:
