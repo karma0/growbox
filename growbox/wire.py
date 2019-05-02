@@ -30,7 +30,7 @@ class Wire:
         if self.address == 0:
             raise ValueError(f"No device I2C address specified.")
 
-        self.bus = SMBus(channel)
+        self.bus = SMBus(port)
 
     def begin(self, *args, **kwargs):
         """
