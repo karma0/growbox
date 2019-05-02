@@ -206,7 +206,7 @@ class SX1509IO(Wire):
         'breathe15',
     ]
 
-    status = []
+    status = {}
 
     def begin(self):
         if self.pin_reset != 255:
