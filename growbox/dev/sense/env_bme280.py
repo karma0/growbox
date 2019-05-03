@@ -237,6 +237,9 @@ class BME280Sensor(Wire):
 
     @property
     def pressure(self):
+        if self.t_fine is None:
+            celcius = self.celsius  # Make sure t_fine is instantiated
+
         buffer = self.read(BME280Register.PRESSURE_MSB, 3)
         adc_p = (int(buffer[0]) << 12) | \
                 (int(buffer[1]) << 4) | \
@@ -277,6 +280,9 @@ class BME280Sensor(Wire):
 
     @property
     def humidity(self):
+        if self.t_fine is None:
+            celcius = self.celsius  # Make sure t_fine is instantiated
+
         buffer = self.read(BME280Register.HUMIDITY_MSB, 2)
         adc_h = (buffer[0] << 8) | buffer[1]
 

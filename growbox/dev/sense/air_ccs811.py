@@ -148,8 +148,8 @@ class CCS811Sensor(Wire):
     @environment.setter
     def environment(self, environment):
         self._environment = environment
-        humidity = self._environment.humidity * 1000
         celsius = self._environment.celsius * 1000
+        humidity = self._environment.humidity * 1000
         celsius += 25000  # Add the 25C offset
 
         data = [
