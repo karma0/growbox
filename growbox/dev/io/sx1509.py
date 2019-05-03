@@ -238,9 +238,11 @@ class SX1509IO(Wire):
             self.write(SX1509Register.RESET, 0x34)
 
     def pin_dir(self, pin, iomode):
-        mode = 1
+        mode = None
         if iomode == IOMode.OUTPUT or iomode == IOMode.ANALOG_OUTPUT:
             mode = 0
+        else:
+            mode = 1
 
         dirb = self.read_word(SX1509Register.DIR_B)
         if mode:
