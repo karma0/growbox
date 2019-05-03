@@ -153,8 +153,10 @@ class CCS811Sensor(Wire):
         celsius += 25000  # Add the 25C offset
 
         data = [
-            int((humidity + 250) / 500, 0),
-            int((celsius + 250) / 500, 0),
+            int((humidity + 250) / 500),
+            0,
+            int((celsius + 250) / 500),
+            0,
         ]
         self.write(CCS811Register.ENV_DATA, data)
 
