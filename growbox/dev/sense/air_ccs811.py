@@ -10,7 +10,7 @@ from growbox.enum import Enum
 from growbox.wire import Wire
 
 
-class CSS811Register(Enum):
+class CCS811Register(Enum):
     STATUS          = 0x00
     MEAS_MODE       = 0x01
     ALG_RESULT_DATA = 0x02
@@ -28,7 +28,7 @@ class CSS811Register(Enum):
     SW_RESET        = 0xFF
 
 
-class CSS811Error(Enum):
+class CCS811Error(Enum):
     SUCCESS = 0x00
     ID_ERROR = 0x01
     I2C_ERROR = 0x02
@@ -36,7 +36,7 @@ class CSS811Error(Enum):
     GENERIC_ERROR = 0x04
 
 
-class CSS811DriveMode(Enum):
+class CCS811DriveMode(Enum):
     IDLE       = 0
     SECONDS_1  = 1
     SECONDS_10 = 2
@@ -68,55 +68,57 @@ class CCS811Sensor(Wire):
     def __init__(self, *args, **kwargs):
         env = kwargs.pop('environment', None)
         if env is not None:
-            self.environment = env
+            self._environment = env
 
         super().__init__(*args, **kwargs)
 
     def begin(self):
         reset_key = [0x11, 0xE5, 0x72, 0x8A]
-        self.write(CSS811Register.SW_RESET, reset_key)
 
-        temp = 0
-        for step in range(200000):
-            temp += 1
+        if self.read(CCS811Register.HW_ID) != 0x81:
+            return CCS811Error.ID_ERROR
+
+        self.write(CCS811Register.SW_RESET, reset_key)
 
         if self.error_status or not self.app_valid:
-            return CSS811Error.INTERNAL_ERROR
+            return CCS811Error.INTERNAL_ERROR
 
-        if self.write(CSS811Register.APP_START) != 0:
-            return CSS811Error.I2C_ERROR
+        self.write(CCS811Register.APP_START)
 
-        self.drive_mode = CSS811DriveMode.SECONDS_1
+        self.drive_mode = CCS811DriveMode.SECONDS_1
+
+        if self._environment is not None:
+            self.environment = self._environment
 
     def read_algorithm_results(self):
-        data = self.read(CSS811Register.ALG_RESULT_DATA, 4)
+        data = self.read(CCS811Register.ALG_RESULT_DATA, 4)
 
         # Data ordered:
-	# co2MSB, co2LSB, tvocMSB, tvocLSB
+        # co2MSB, co2LSB, tvocMSB, tvocLSB
         self.co2 = (data[0] << 8) | data[1]
         self.t_voc = (data[2] << 8) | data[3]
 
-        return CSS811Error.SUCCESS
+        return CCS811Error.SUCCESS
 
     @property
     def error_status(self):
-        return self.read(CSS811Register.STATUS) & 1 << 0
+        return self.read(CCS811Register.STATUS) & 1 << 0
 
     @property
     def data_available(self):
-        return self.read(CSS811Register.STATUS) & 1 << 3
+        return self.read(CCS811Register.STATUS) & 1 << 3
 
     @property
     def app_valid(self):
-        return self.read(CSS811Register.STATUS) & 1 << 4
+        return self.read(CCS811Register.STATUS) & 1 << 4
 
     @property
     def error(self):
-        return CSS811Error(self.read(CSS811Register.ERROR_ID))
+        return CCS811Error(self.read(CCS811Register.ERROR_ID))
 
     @property
     def baseline(self):
-        data = self.read(CSS811Register.BASELINE, 2)
+        data = self.read(CCS811Register.BASELINE, 2)
         return data[0] << 8 | data[1]
 
     @baseline.setter
@@ -125,7 +127,7 @@ class CCS811Sensor(Wire):
             (baseline >> 8) & 0x00FF,
             baseline & 0x00FF,
         ]
-        return self.write(CSS811Register.BASELINE, data)
+        return self.write(CCS811Register.BASELINE, data)
 
     @property
     def drive_mode(self):
@@ -134,10 +136,10 @@ class CCS811Sensor(Wire):
     @drive_mode.setter
     def drive_mode(self, mode):
         self._drive_mode = mode
-        value = self.read(CSS811Register.MEAS_MODE)
+        value = self.read(CCS811Register.MEAS_MODE)
         value &= ~(0b00000111 << 4)
         value |= mode << 4
-        self.write(CSS811Register.MEAS_MODE, value)
+        self.write(CCS811Register.MEAS_MODE, value)
 
     @property
     def environment(self):
@@ -154,10 +156,10 @@ class CCS811Sensor(Wire):
             (humidity + 250) / 500, 0,
             (celsius + 250) / 500, 0,
         ]
-        self.write(CSS811Register.ENV_DATA, data)
+        self.write(CCS811Register.ENV_DATA, data)
 
     def read_ntc(self):
-        data = self.read(CSS811Register.NTC, 4)
+        data = self.read(CCS811Register.NTC, 4)
         vref_counts = (data[0] << 8) | data[1]
         ntc_counts = (data[2] << 8) | data[3]
         self.resistance = ntc_counts * self.reference_resistance / vref_counts
