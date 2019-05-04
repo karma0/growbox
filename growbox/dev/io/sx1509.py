@@ -161,51 +161,6 @@ class SX1509IO(Wire):
 
     _clk = 0
 
-    commands = [
-        'pwm0',
-        'pwm1',
-        'pwm2',
-        'pwm3',
-        'pwm4',
-        'pwm5',
-        'pwm6',
-        'pwm7',
-        'pwm8',
-        'pwm9',
-        'pwm10',
-        'pwm11',
-        'pwm12',
-        'pwm13',
-        'pwm14',
-        'pwm15',
-
-        'blink0',
-        'blink1',
-        'blink2',
-        'blink3',
-        'blink4',
-        'blink5',
-        'blink6',
-        'blink7',
-        'blink8',
-        'blink9',
-        'blink10',
-        'blink11',
-        'blink12',
-        'blink13',
-        'blink14',
-        'blink15',
-
-        'breathe4',
-        'breathe5',
-        'breathe6',
-        'breathe7',
-        'breathe12',
-        'breathe13',
-        'breathe14',
-        'breathe15',
-    ]
-
     status = {}
 
     def begin(self):

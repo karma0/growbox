@@ -11,7 +11,8 @@ class VEML6075:
         self.veml = adafruit_veml6075.VEML6075(
             self.i2c,
             integration_time=integration_time,
-            address=address)
+            address=address,
+        )
 
     @property
     def integration_time(self):

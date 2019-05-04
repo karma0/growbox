@@ -8,7 +8,10 @@ class BME280:
     def __init__(self, address=None):
         # Create library object using our Bus I2C port
         self.i2c = busio.I2C(board.SCL, board.SDA)
-        self.bme280 = adafruit_bme280.Adafruit_BME280_I2C(self.i2c)
+        self.bme280 = adafruit_bme280.Adafruit_BME280_I2C(
+            self.i2c,
+            address=address,
+        )
 
         # OR create library object using our Bus SPI port
         #self.spi = busio.SPI(board.SCK, board.MOSI, board.MISO)
