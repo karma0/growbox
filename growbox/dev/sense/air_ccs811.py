@@ -72,18 +72,24 @@ class CCS811Sensor(Wire):
 
         super().__init__(*args, **kwargs)
 
+    def reset(self):
+        self.write(CCS811Register.SW_RESET, [0x11, 0xE5, 0x72, 0x8A])
+        time.sleep(.1)
+
     def begin(self):
-        reset_key = [0x11, 0xE5, 0x72, 0x8A]
+        time.sleep(.1)
 
         if self.read(CCS811Register.HW_ID) != 0x81:
             return CCS811Error.ID_ERROR
 
-        self.write(CCS811Register.SW_RESET, reset_key)
+        self.reset()
 
         if self.error_status or not self.app_valid:
             return CCS811Error.INTERNAL_ERROR
 
         self.write(CCS811Register.APP_START)
+
+        time.sleep(.1)
 
         self.drive_mode = CCS811DriveMode.SECONDS_1
 
