@@ -79,21 +79,36 @@ class CCS811Sensor(Wire):
     def begin(self):
         time.sleep(.1)
 
+        print("Fetching HW_ID")
         if self.read(CCS811Register.HW_ID) != 0x81:
+            print(f"HW_ID: {self.read(CCS811Register.HW_ID)}")
             return CCS811Error.ID_ERROR
 
+        print("Resetting.")
         self.reset()
+        time.sleep(.1)
+        print("Reset.")
 
-        if self.error_status or not self.app_valid:
+        print("Checking error_status.")
+        if self.error_status:
+            print(f"Error: {self.error}")
+            return self.error
+
+        print("Checking APP_VALID.")
+        if not self.app_valid:
+            print(f"App invalid: {self.app_valid}")
             return CCS811Error.INTERNAL_ERROR
 
+        print("Starting app.")
         self.write(CCS811Register.APP_START)
-
         time.sleep(.1)
+        print("App started.")
 
+        print("Setting drive_mode")
         self.drive_mode = CCS811DriveMode.SECONDS_1
 
         if self._environment is not None:
+            print("Setting environment")
             self.environment = self._environment
 
     def read_algorithm_results(self):
