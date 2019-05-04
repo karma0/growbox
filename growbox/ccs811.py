@@ -4,7 +4,7 @@ import busio
 import adafruit_ccs811
 
 i2c = busio.I2C(board.SCL, board.SDA)
-ccs811 = adafruit_ccs811.CCS811(i2c, address=0x5B)
+ccs811 = adafruit_ccs811.CCS811(i2c, address=0x77)
 
 # Wait for the sensor to be ready and calibrate the thermistor
 while not ccs811.data_ready:
