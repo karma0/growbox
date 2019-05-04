@@ -79,10 +79,11 @@ class CCS811Sensor(Wire):
     def begin(self):
         time.sleep(.1)
 
-        print("Fetching HW_ID")
-        if self.read(CCS811Register.HW_ID) != 0x81:
-            print(f"HW_ID: {self.read(CCS811Register.HW_ID)}")
-            return CCS811Error.ID_ERROR
+        #print("Fetching HW_ID")
+        #hw_id = self.read(CCS811Register.HW_ID)
+        #print(f"HW_ID: {hw_id}")
+        #if hw_id != 0x81:
+        #    return CCS811Error.ID_ERROR
 
         print("Resetting.")
         self.reset()
