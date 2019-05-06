@@ -5,7 +5,7 @@
 
 from smbus2 import SMBus
 
-from growbox.enum import Enum
+from growbox.common.enum import Enum
 
 
 class Wire:

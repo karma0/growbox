@@ -5,8 +5,8 @@
 
 import time
 
-from growbox.enum import Enum
-from growbox.wire import Wire
+from growbox.common.enum import Enum
+from growbox.common.wire import Wire
 
 
 class VEML6075Resolution(Enum):

@@ -5,8 +5,8 @@
 
 import time
 
-from growbox.enum import Enum
-from growbox.wire import Wire
+from growbox.common.enum import Enum
+from growbox.common.wire import Wire
 
 
 def constrain(val, min_val, max_val):

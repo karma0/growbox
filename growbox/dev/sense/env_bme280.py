@@ -6,8 +6,8 @@
 from math import log10, log
 from collections import defaultdict
 
-from growbox.enum import Enum
-from growbox.wire import Wire
+from growbox.common.enum import Enum
+from growbox.common.wire import Wire
 
 
 class BME280Mode(Enum):
