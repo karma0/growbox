@@ -63,8 +63,13 @@ logger = logging.getLogger(__name__)
 
 
 class Fans:
-    upper_fan_pins = [6, 7]
-    lower_fan_pins = [4, 5]
+    upper_fan_pins = (6, 7)
+    lower_fan_pins = (4, 5)
+
+    status = OrderedDict([
+        ('upper_fans', 0),
+        ('lower_fans', 0),
+    ])
 
     def __init__(self, fans, pins=None):
         self.fans = fans
@@ -78,21 +83,29 @@ class Fans:
 
     def upper_fans_on(self):
         logger.info("Upper fans on.")
+        self.status['upper_fans'] = 1
+
         for pin in self.upper_fan_pins:
             self.fans.analog_write(pin, IOLogic.LOW)
 
     def upper_fans_off(self):
         logger.info("Upper fans off.")
+        self.status['upper_fans'] = 0
+
         for pin in self.upper_fan_pins:
             self.fans.analog_write(pin, IOLogic.HIGH)
 
     def lower_fans_on(self):
         logger.info("Lower fans on.")
+        self.status['lower_fans'] = 1
+
         for pin in self.lower_fan_pins:
             self.fans.analog_write(pin, IOLogic.LOW)
 
     def lower_fans_off(self):
         logger.info("Lower fans off.")
+        self.status['lower_fans'] = 0
+
         for pin in self.lower_fan_pins:
             self.fans.analog_write(pin, IOLogic.HIGH)
 
@@ -115,9 +128,6 @@ class Fans:
         time.sleep(5)
         self.upper_fans_off()
         self.lower_fans_off()
-
-    def status(self):
-        pass
 
 
 class Relay:
@@ -287,23 +297,25 @@ class GrowBox:
     fields = {}
 
     relays = OrderedDict([
-        ('heater', 0)
-        ('lamp', 1)
-        ('none', 3)
-        ('humidifier', 2)
+        ('heater', 0),
+        ('lamp', 1),
+        ('none', 2),
+        ('mister', 3),
     ])
 
-    def __init__(self, profile):
+    def __init__(self, profile, logfile='growbox.log'):
+        self.logfile = logfile
+
         self.bme280 = BME280()
         #self.ccs811 = CCS811()
         self.veml = VEML6075()
-        self.relays = QuadRelay()
+        self.quad_relay = QuadRelay()
+        self.mister = Relay(self.quad_relay, relay_id=self.relays.get('mister'))
         self.fans = Fans(SX1509IO())
 
         self.process = Profile(growbox=self, profile=profile)
 
-    def setup_parameters(self):
-        self.fields = OrderedDict(
+        self.fields = OrderedDict([
             ('localtime', time),
             ('celsius', self.bme280),
             ('fahrenheit', self.bme280),
@@ -314,23 +326,18 @@ class GrowBox:
             ('uv_index', self.veml),
             ('uva', self.veml),
             ('uvb', self.veml),
-            ('relays_status', self.relays),
-            ('fans_status', self.fans),
-        )
+            ('mister_status', self),
+            ('fans_status', self),
+        ])
 
     def begin(self):
         self.relays.begin()
-        self.setup_relays()
-
         self.fans.fans.begin()
-        #self.fans.setup_fans()
-
-        self.setup_parameters()
 
     def run(self):
         self.begin()
 
-        with open('growbox.log', 'a') as csvfile:
+        with open(self.logfile, 'a') as csvfile:
             writer = csv.DictWriter(csvfile, quoting=csv.QUOTE_MINIMAL,
                     fieldnames=self.fields.keys())
 
@@ -338,11 +345,7 @@ class GrowBox:
                 data = {}
                 for field, obj in self.fields:
                     getter = getattr(obj, field)
-
-                    if callable(getter):
-                        value = getter()
-                    else:
-                        value = getter
+                    value = getter() if callable(getter) else getter
 
                     if isinstance(value, dict):
                         data.update(value.items())
@@ -353,13 +356,8 @@ class GrowBox:
                 self.process(data)
                 time.sleep(self.rate)
 
-    # Relays
+    def fans_status(self):
+        return self.fans.status
 
-    def setup_relays(self):
-        self.mister = Relay(self.relays, relay_id=4)
-
-    def relay_status(self):
-        return OrderedDict([
-            ("relay{}".format(ix), str(val))
-            for ix, val in enumerate(self.relays.status)
-        ])
+    def mister_status(self):
+        return self.mister.status
