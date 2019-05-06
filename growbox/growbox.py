@@ -293,8 +293,7 @@ class Profile:
 class GrowBox:
 
     rate = 10  # rate in seconds at which to read values
-
-    fields = {}
+    fields = None
 
     relays = OrderedDict([
         ('heater', 0),
@@ -342,7 +341,9 @@ class GrowBox:
                     fieldnames=self.fields.keys())
 
             while True:
+                start = time.localtime()
                 data = {}
+
                 for field, obj in self.fields:
                     getter = getattr(obj, field)
                     value = getter() if callable(getter) else getter
@@ -354,7 +355,9 @@ class GrowBox:
 
                 writer.writerow(data)
                 self.process(data)
-                time.sleep(self.rate)
+                left = start + self.rate - time.localtime()
+                if left < 0:
+                    time.sleep(left)
 
     def fans_status(self):
         return self.fans.status
