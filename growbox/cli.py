@@ -4,13 +4,14 @@
 import sys
 import click
 
+from growbox.growbox import GrowBox
+
 
 @click.command()
 def main(args=None):
     """Console script for growbox."""
-    click.echo("Replace this message by putting your code into "
-               "growbox.cli.main")
-    click.echo("See click documentation at http://click.pocoo.org/")
+    box = GrowBox()
+    box.run()
     return 0
 
 
