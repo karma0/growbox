@@ -5,9 +5,16 @@ import adafruit_ccs811
 
 class CCS811:
     """AF CP CCS811 wrapper"""
+    address = 0x5B
+    #address = 0x5A
+
     def __init__(self, address=None):
         self.i2c = busio.I2C(board.SCL, board.SDA)
-        self.ccs811 = adafruit_ccs811.CCS811(self.i2c, address=address)
+
+        if address is not None:
+            self.address = address
+
+        self.ccs811 = adafruit_ccs811.CCS811(self.i2c, address=self.address)
 
         # Wait for the sensor to be ready and calibrate the thermistor
         while not self.ccs811.data_ready:

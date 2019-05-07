@@ -6,12 +6,18 @@ import adafruit_veml6075
 
 class VEML6075:
     """AF CP VEML6075 wrapper"""
+    address = 0x10
+
     def __init__(self, address=None, integration_time=100):
         self.i2c = busio.I2C(board.SCL, board.SDA)
+
+        if address is not None:
+            self.address = address
+
         self.veml = adafruit_veml6075.VEML6075(
             self.i2c,
             integration_time=integration_time,
-            address=address,
+            address=self.address,
         )
 
     @property
