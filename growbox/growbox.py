@@ -302,7 +302,7 @@ class GrowBox:
         ('mister', 3),
     ])
 
-    def __init__(self, profile, logfile='growbox.log'):
+    def __init__(self, profile=None, logfile='growbox.log'):
         self.logfile = logfile
 
         self.bme280 = BME280()
