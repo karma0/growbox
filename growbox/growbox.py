@@ -253,21 +253,24 @@ class Profile:
 
     def __call__(self, data):
 
-        #if not self.celsius(data['celsius']):
-        #    if data['celsius'] < self.celsius.minval:
-        #        self.box.fans.stop()
-        #    elif data['celsius'] > self.celsius.maxval:
-        #        self.box.fans.exchange()
+        #if self.celsius is not None:
+        #    if not self.celsius(data['celsius']):
+        #        if data['celsius'] < self.celsius.minval:
+        #            self.box.fans.stop()
+        #        elif data['celsius'] > self.celsius.maxval:
+        #            self.box.fans.exchange()
 
-        if not self.humidity(data['humidity']):
-            if data['humidity'] < self.humidity.minval:
-                self.box.mister.on()
-            elif data['humidity'] > self.humidity.maxval:
+        if self.humidity is not None:
+            if not self.humidity(data['humidity']):
+                if data['humidity'] < self.humidity.minval:
+                    self.box.mister.on()
+                elif data['humidity'] > self.humidity.maxval:
+                    self.box.mister.off()
+
+        if self.air_exchange_rate is not None:
+            if self.air_exchange_rate():
                 self.box.mister.off()
-
-        if self.air_exchange_rate():
-            self.box.mister.off()
-            self.box.fans.exchange()
+                self.box.fans.exchange()
 
     @property
     def profile(self):
