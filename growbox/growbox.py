@@ -344,7 +344,7 @@ class GrowBox:
                 start = time.localtime()
                 data = {}
 
-                for field, obj in self.fields:
+                for field, obj in self.fields.items():
                     getter = getattr(obj, field)
                     value = getter() if callable(getter) else getter
 
