@@ -28,6 +28,8 @@ from growbox.veml6075 import VEML6075
 
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
 
 #class ApplicationBuilder:
 #    """Create a useable application."""
