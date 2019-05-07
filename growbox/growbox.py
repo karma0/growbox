@@ -163,7 +163,7 @@ class Relay:
     def status(self):
         status = self.relays.get_status_by_id(self._id)
         logger.info("Relay {self._id} status = {status}")
-        return status
+        return int(status)
 
 
 class Timer:
