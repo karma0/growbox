@@ -27,6 +27,7 @@ from growbox.bme280 import BME280
 from growbox.veml6075 import VEML6075
 
 
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
