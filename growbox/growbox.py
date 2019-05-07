@@ -163,7 +163,7 @@ class Relay:
     @property
     def status(self):
         status = self.relays.get_status_by_id(self._id)
-        logger.info("Relay {self._id} status = {status}")
+        #logger.info(f"Relay {self._id} status = {status}")
         return int(status)
 
 
@@ -180,7 +180,7 @@ class Timer:
     def __call__(self):
         """Call to update time"""
         if self.timesup:
-            logger.info("Time is up on timer for {self.seconds} seconds.")
+            logger.info(f"Time is up on timer for {self.seconds} seconds.")
             self.last_time = time.time()
             if callable(self.action):
                 self.action()
@@ -217,7 +217,7 @@ class InRange(Range):
         if self.valinrange(value):
             return True
 
-        logger.info("Value ({value}) out of range: {self.minval}-{self.maxval}")
+        logger.info(f"Value ({value}) out of range: {self.minval}-{self.maxval}")
         if self.action is not None:
             self.action()
 
@@ -232,7 +232,7 @@ class OutOfRange(Range):
         if not self.valinrange(value):
             return True
 
-        logger.info("Value ({value}) within range: {self.minval}-{self.maxval}")
+        logger.info(f"Value ({value}) within range: {self.minval}-{self.maxval}")
         if self.action is not None:
             self.action()
 
