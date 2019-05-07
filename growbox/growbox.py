@@ -330,7 +330,7 @@ class GrowBox:
         ])
 
     def begin(self):
-        self.relays.begin()
+        self.quaq_relay.begin()
         self.fans.fans.begin()
 
     def run(self):
