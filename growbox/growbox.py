@@ -354,7 +354,7 @@ class GrowBox:
                                     fieldnames=self.fields.keys())
 
             while True:
-                start = time.localtime()
+                start = time.time()
                 data = {}
 
                 for field, obj in self.fields.items():
@@ -368,7 +368,7 @@ class GrowBox:
 
                 writer.writerow(data)
                 self.process(data)
-                left = start + self.rate - time.localtime()
+                left = start + self.rate - time.time()
                 if left < 0:
                     time.sleep(left)
 
