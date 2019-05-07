@@ -334,8 +334,8 @@ class GrowBox:
             ('uva', self.veml),
             ('uvb', self.veml),
             ('mister_status', self),
-            ('upper_fans_status', self),
-            ('lower_fans_status', self),
+            ('upper_fans_status', self.fans),
+            ('lower_fans_status', self.fans),
         ])
 
     def begin(self):
