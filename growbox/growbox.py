@@ -129,6 +129,14 @@ class Fans:
         self.upper_fans_off()
         self.lower_fans_off()
 
+    @property
+    def upper_fans_status(self):
+        return self.status['upper_fans']
+
+    @property
+    def lower_fans_status(self):
+        return self.status['lower_fans']
+
 
 class Relay:
     def __init__(self, relays, relay_id=0):
@@ -326,7 +334,8 @@ class GrowBox:
             ('uva', self.veml),
             ('uvb', self.veml),
             ('mister_status', self),
-            ('fans_status', self),
+            ('upper_fans_status', self),
+            ('lower_fans_status', self),
         ])
 
     def begin(self):
@@ -338,7 +347,7 @@ class GrowBox:
 
         with open(self.logfile, 'a') as csvfile:
             writer = csv.DictWriter(csvfile, quoting=csv.QUOTE_MINIMAL,
-                    fieldnames=self.fields.keys())
+                                    fieldnames=self.fields.keys())
 
             while True:
                 start = time.localtime()
@@ -358,9 +367,6 @@ class GrowBox:
                 left = start + self.rate - time.localtime()
                 if left < 0:
                     time.sleep(left)
-
-    def fans_status(self):
-        return self.fans.status
 
     def mister_status(self):
         return self.mister.status
