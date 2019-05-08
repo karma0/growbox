@@ -369,8 +369,12 @@ class GrowBox:
                         data[field] = value
 
                 writer.writerow(data)
+
+                logger.info("Processing data")
                 self.process(data)
+
                 left = start + self.rate - time.time()
+                logger.info(f"Sleeping {left} seconds")
                 if left > 0:
                     time.sleep(left)
 
