@@ -371,7 +371,7 @@ class GrowBox:
                 writer.writerow(data)
                 self.process(data)
                 left = start + self.rate - time.time()
-                if left < 0:
+                if left > 0:
                     time.sleep(left)
 
     def mister_status(self):
