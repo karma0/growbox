@@ -149,16 +149,19 @@ class Relay:
     def on(self):
         logger.info(f"Relay {self._id} on.")
         self.quad_relay.on(self._id)
-        time.sleep(5)
 
     def off(self):
         logger.info(f"Relay {self._id} off.")
         self.quad_relay.off(self._id)
-        time.sleep(5)
 
     def toggle(self):
         logger.info(f"Relay {self._id} toggle.")
         self.quad_relay.toggle(self._id)
+
+    def humidify(self):
+        self.on()
+        time.sleep(5)
+        self.off()
 
     @property
     def status(self):
@@ -267,18 +270,14 @@ class Profile:
         if self.humidity is not None:
             if not self.humidity(data['humidity']):
                 if data['humidity'] < self.humidity.minval:
-                    self.box.mister.on()
+                    self.box.mister.humidify()
                 elif data['humidity'] > self.humidity.maxval:
-                    self.box.mister.off()
-        else:
-            logger.info(f"Humidity is None")
+                    self.box.fans.exchange()
 
         if self.air_exchange_rate is not None:
             if self.air_exchange_rate():
                 self.box.mister.off()
                 self.box.fans.exchange()
-        else:
-            logger.info(f"Air Exchange Rate is None")
 
     @property
     def profile(self):
@@ -315,10 +314,10 @@ class GrowBox:
     fields = None
 
     relays = OrderedDict([
-        ('heater', 0),
-        ('lamp', 1),
-        ('none', 2),
-        ('mister', 3),
+        ('mister', 0),
+        ('heater', 1),
+        ('lamp', 2),
+        ('none', 3),
     ])
 
     def __init__(self, profile=None, logfile='growbox.log'):
