@@ -355,7 +355,9 @@ class GrowBox:
             writer = csv.DictWriter(csvfile, quoting=csv.QUOTE_MINIMAL,
                                     fieldnames=self.fields.keys())
 
+            logger.info("Looping...")
             while True:
+                logger.info("Iteraton start.")
                 start = time.time()
                 data = {}
 
@@ -377,6 +379,7 @@ class GrowBox:
                 logger.info(f"Sleeping {left} seconds")
                 if left > 0:
                     time.sleep(left)
+                logger.info("Iteraton end.")
 
     def mister_status(self):
         return self.mister.status
