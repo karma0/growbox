@@ -187,6 +187,8 @@ class Timer:
             self.last_time = time.time()
             if callable(self.action):
                 self.action()
+            return True
+        return False
 
     @property
     def timesup(self):
