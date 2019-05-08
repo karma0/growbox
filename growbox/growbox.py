@@ -269,11 +269,15 @@ class Profile:
                     self.box.mister.on()
                 elif data['humidity'] > self.humidity.maxval:
                     self.box.mister.off()
+        else:
+            logger.info(f"Humidity is None")
 
         if self.air_exchange_rate is not None:
             if self.air_exchange_rate():
                 self.box.mister.off()
                 self.box.fans.exchange()
+        else:
+            logger.info(f"Air Exchange Rate is None")
 
     @property
     def profile(self):
@@ -357,7 +361,6 @@ class GrowBox:
 
             logger.info("Looping...")
             while True:
-                logger.info("Iteraton start.")
                 start = time.time()
                 data = {}
 
@@ -379,7 +382,6 @@ class GrowBox:
                 logger.info(f"Sleeping {left} seconds")
                 if left > 0:
                     time.sleep(left)
-                logger.info("Iteraton end.")
 
     def mister_status(self):
         return self.mister.status
