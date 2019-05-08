@@ -297,7 +297,7 @@ class Profile:
         #if self.co2 is None:
         #    self.co2 = InRange(minval=5000)
         if self.air_exchange_rate is None:
-            self.air_exchange_rate = Timer(minutes=20)
+            self.air_exchange_rate = Timer(minutes=1)
 
     @property
     def growbox(self):
