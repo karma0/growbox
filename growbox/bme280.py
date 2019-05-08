@@ -59,11 +59,6 @@ class BME280:
         return self.bme280.humidity
 
     @property
-    def pressure(self):
-        """Air pressure"""
-        return self.bme280.pressure
-
-    @property
     def altitude(self):
         """Altitude (in meters)"""
         return self.bme280.altitude

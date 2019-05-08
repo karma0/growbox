@@ -332,7 +332,6 @@ class GrowBox:
             ('localtime', time),
             ('celsius', self.bme280),
             ('fahrenheit', self.bme280),
-            ('pressure', self.bme280),
             ('altitude', self.bme280),
             ('humidity', self.bme280),
             #('co2', self.ccs811),
