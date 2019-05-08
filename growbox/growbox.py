@@ -331,6 +331,7 @@ class GrowBox:
         self.fans = Fans(SX1509IO())
 
         self.process = Profile(growbox=self, profile=profile)
+        self.process.profile = {}
 
         self.fields = OrderedDict([
             ('localtime', time),
