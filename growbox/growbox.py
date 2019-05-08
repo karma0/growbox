@@ -194,11 +194,12 @@ class Timer:
 class Range:
     minval = 0
     maxval = 0
+    action = None
 
-    def __init__(self, action=None, minval=None, maxval=None):
-        self.action = action
+    def __init__(self, minval=None, maxval=None, action=None):
         self.minval = minval
         self.maxval = maxval
+        self.action = action
 
     def valinrange(self, value):
         if self.maxval is None:
