@@ -67,11 +67,11 @@ class QuadRelay(Wire):
         self.write(QuadRelayCommands.ALL_TOGGLE)
 
     def off(self, relay_id):
-        if self.status(relay_id):
+        if self.get_status_by_id(relay_id):
             self.toggle(relay_id)
 
     def on(self, relay_id):
-        if not self.status(relay_id):
+        if not self.get_status_by_id(relay_id):
             self.toggle(relay_id)
 
     def toggle(self, relay_id):
