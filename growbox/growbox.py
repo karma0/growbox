@@ -142,27 +142,27 @@ class Fans:
 
 
 class Relay:
-    def __init__(self, relays, relay_id=0):
-        self.relays = relays
+    def __init__(self, quad_relay, relay_id=0):
+        self.quad_relay = quad_relay
         self._id = relay_id
 
     def on(self):
         logger.info(f"Relay {self._id} on.")
-        self.relays.on(self._id)
+        self.quad_relay.on(self._id)
         time.sleep(5)
 
     def off(self):
         logger.info(f"Relay {self._id} off.")
-        self.relays.off(self._id)
+        self.quad_relay.off(self._id)
         time.sleep(5)
 
     def toggle(self):
         logger.info(f"Relay {self._id} toggle.")
-        self.relays.toggle(self._id)
+        self.quad_relay.toggle(self._id)
 
     @property
     def status(self):
-        status = self.relays.get_status_by_id(self._id)
+        status = self.quad_relay.get_status_by_id(self._id)
         #logger.info(f"Relay {self._id} status = {status}")
         return None if status is None else int(status)
 
