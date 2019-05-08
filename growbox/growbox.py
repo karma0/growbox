@@ -164,7 +164,7 @@ class Relay:
     def status(self):
         status = self.relays.get_status_by_id(self._id)
         #logger.info(f"Relay {self._id} status = {status}")
-        return int(status)
+        return None if status is None else int(status)
 
 
 class Timer:
