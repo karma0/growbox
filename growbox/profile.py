@@ -2,6 +2,7 @@
 
 """Main module."""
 
+import time
 import logging
 
 from growbox.operators.range import InRange
@@ -20,6 +21,7 @@ class Profile:
     humidity = None
     co2 = None
     uv_index = None
+    lux = None
     air_exchange_rate = None
 
     def __init__(self, growbox=None, profile=None):
@@ -36,6 +38,15 @@ class Profile:
         #            self.box.fans.stop()
         #        elif data['celsius'] > self.celsius.maxval:
         #            self.box.fans.exchange()
+
+        if self.lux is not None:
+            if not self.lux(data['lux']) \
+                    and time.localtime().tm_hour > 6 \
+                    and time.localtime().tm_hour < 20:
+                if data['lux'] < self.lux.minval:
+                    self.box.lights.brighter()
+                elif data['lux'] > self.lux.maxval:
+                    self.box.lights.darker()
 
         if self.humidity is not None:
             if not self.humidity(data['humidity']):
@@ -60,6 +71,8 @@ class Profile:
             setattr(self, key, valrange)
 
         # Set some defaults
+        if self.lux is None:
+            self.lux = InRange(400, 800)
         #if self.celsius is None:
         #    self.celsius = InRange(18, 24)
         if self.humidity is None:

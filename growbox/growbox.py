@@ -15,6 +15,7 @@ from growbox.dev.io.sx1509 import SX1509IO
 from growbox.dev.sense.bme280 import BME280
 #from growbox.dev.sense.ccs811 import CCS811
 from growbox.dev.sense.veml6075 import VEML6075
+from growbox.dev.sense.tsl2591 import TSL2591
 
 from growbox.facade.relay import Relay
 from growbox.facade.fans import Fans
@@ -43,7 +44,7 @@ class GrowBox:
 
         self.bme280 = BME280()
         #self.ccs811 = CCS811()
-        self.lux = CCS811()
+        self.lux = TSL2591()
         self.veml = VEML6075()
         self.quad_relay = QuadRelay()
         self.mister = Relay(self.quad_relay, relay_id=self.relays.get('mister'))
