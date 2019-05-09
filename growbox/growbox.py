@@ -43,6 +43,7 @@ class GrowBox:
 
         self.bme280 = BME280()
         #self.ccs811 = CCS811()
+        self.lux = CCS811()
         self.veml = VEML6075()
         self.quad_relay = QuadRelay()
         self.mister = Relay(self.quad_relay, relay_id=self.relays.get('mister'))
@@ -59,6 +60,7 @@ class GrowBox:
             ('humidity', self.bme280),
             #('co2', self.ccs811),
             #('tvoc', self.ccs811),
+            ('lux', self.lux),
             ('uv_index', self.veml),
             ('uva', self.veml),
             ('uvb', self.veml),
