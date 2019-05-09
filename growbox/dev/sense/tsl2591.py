@@ -70,3 +70,7 @@ def main():
         print('Visible light: {0}'.format(visible))
         print('Full spectrum (IR + visible) light: {0}'.format(full_spectrum))
         time.sleep(1.0)
+
+
+if __name__ == "__main__":
+    main()
