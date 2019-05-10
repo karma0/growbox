@@ -17,7 +17,7 @@ class CCS811:
         self.ccs811 = adafruit_ccs811.CCS811(self.i2c, address=self.address)
 
         # Wait for the sensor to be ready and calibrate the thermistor
-        while not self.ccs811.data_ready:
+        while not self.ready:
             pass
 
         # Set temp offset to a sane default
@@ -29,6 +29,10 @@ class CCS811:
         calculations.
         """
         self.ccs811.temp_offset = self.temperature - temp
+
+    @property
+    def ready(self):
+        return self.ccs811.data_ready
 
     @property
     def eco2(self):
