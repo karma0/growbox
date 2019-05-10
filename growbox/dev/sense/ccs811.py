@@ -53,7 +53,7 @@ class CCS811:
 
 def main():
     """Main CLI function"""
-    ccs811 = CCS811(0x58)
+    ccs811 = CCS811()
     while True:
         print("CO2: {} PPM, TVOC: {} PPM, Temp: {} C"
               .format(ccs811.eco2, ccs811.tvoc, ccs811.temperature))
