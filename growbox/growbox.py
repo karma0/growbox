@@ -11,6 +11,7 @@ from collections import OrderedDict
 import logging
 
 from growbox.dev.actuate.relay import QuadRelay
+from growbox.dev.io.onewire import DS18B20
 from growbox.dev.io.sx1509 import SX1509IO
 from growbox.dev.sense.bme280 import BME280
 #from growbox.dev.sense.ccs811 import CCS811
@@ -42,6 +43,7 @@ class GrowBox:
     def __init__(self, profile=None, logfile='growbox.log'):
         self.logfile = logfile
 
+        self.ds18b20 = DS18B20()
         self.bme280 = BME280()
         #self.ccs811 = CCS811()
         self.lux = TSL2591()
@@ -61,6 +63,7 @@ class GrowBox:
             ('humidity', self.bme280),
             #('co2', self.ccs811),
             #('tvoc', self.ccs811),
+            ('temperature', self.ds18b20),
             ('lux', self.lux),
             ('uv_index', self.veml),
             ('uva', self.veml),
