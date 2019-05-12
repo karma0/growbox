@@ -8,7 +8,7 @@ from adafruit_onewire.bus import OneWireBus
 
 
 class OneWire:
-    def __init__(self, pin=board.D12):
+    def __init__(self, pin=board.D21):
         """
         Create the 1-Wire Bus using the pin you've connected to on your
         board.
