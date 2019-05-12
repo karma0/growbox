@@ -2,6 +2,7 @@
 
 """1-Wire interface"""
 
+import time
 import board
 from adafruit_onewire.bus import OneWireBus
 
@@ -78,3 +79,14 @@ class DS18B20(OneWire):
         lsb, msb = data[0], data[1]
         temp_sum = ((msb << 8) | lsb) / 16
         return (temp_sum * 18 + 5) / 10 + 32
+
+
+def main():
+    ds18b20 = DS18B20()
+    while True:
+        print(f"Temperature: {ds18b20.temperature}")
+        time.sleep(1)
+
+
+if __name__ == "__main__":
+    main()
