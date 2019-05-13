@@ -16,7 +16,7 @@ i2c = busio.I2C(SCL, SDA)
 
 # Create a simple PCA9685 class instance for the Motor FeatherWing's default address.
 pca = PCA9685(i2c, address=0x40)
-pca.frequency = 1000
+pca.frequency = 100
 
 # Motor 1 is channels 9 and 10 with 8 held high.
 # Motor 2 is channels 11 and 12 with 13 held high.
