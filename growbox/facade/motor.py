@@ -16,7 +16,7 @@ i2c = busio.I2C(SCL, SDA)
 
 # Create a simple PCA9685 class instance for the Motor FeatherWing's default address.
 pca = PCA9685(i2c, address=0x40)
-pca.frequency = 100
+pca.frequency = 1000
 
 # Motor 1 is channels 9 and 10 with 8 held high.
 # Motor 2 is channels 11 and 12 with 13 held high.
@@ -28,33 +28,32 @@ pca.frequency = 100
 # in testing without a capacitor.
 # See here for more info: https://learn.adafruit.com/adafruit-motor-shield-v2-for-arduino/faq#faq-13
 #pca.channels[7].duty_cycle = 0xffff
-pca.channels[0].duty_cycle = 0xffff
-motor4 = motor.DCMotor(pca.channels[2], pca.channels[1])
+motor4 = motor.DCMotor(pca.channels[0], pca.channels[1])
 
 print("Forwards slow")
 motor4.throttle = 0.5
 print("throttle:", motor4.throttle)
-time.sleep(1)
+time.sleep(5)
 
 print("Forwards")
 motor4.throttle = 1
 print("throttle:", motor4.throttle)
-time.sleep(1)
+time.sleep(5)
 
 print("Backwards")
 motor4.throttle = -1
 print("throttle:", motor4.throttle)
-time.sleep(1)
+time.sleep(5)
 
 print("Backwards slow")
 motor4.throttle = -0.5
 print("throttle:", motor4.throttle)
-time.sleep(1)
+time.sleep(5)
 
 print("Stop")
 motor4.throttle = 0
 print("throttle:", motor4.throttle)
-time.sleep(1)
+time.sleep(5)
 
 print("Spin freely")
 motor4.throttle = None
