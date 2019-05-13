@@ -28,7 +28,8 @@ pca.frequency = 100
 # in testing without a capacitor.
 # See here for more info: https://learn.adafruit.com/adafruit-motor-shield-v2-for-arduino/faq#faq-13
 #pca.channels[7].duty_cycle = 0xffff
-motor4 = motor.DCMotor(pca.channels[0], pca.channels[1])
+pca.channels[0].duty_cycle = 0xffff
+motor4 = motor.DCMotor(pca.channels[2], pca.channels[1])
 
 print("Forwards slow")
 motor4.throttle = 0.5
