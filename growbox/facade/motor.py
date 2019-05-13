@@ -27,8 +27,11 @@ pca.frequency = 100
 # cases. A capacitor can be used to help prevent this. The demo uses motor 4 because it worked ok
 # in testing without a capacitor.
 # See here for more info: https://learn.adafruit.com/adafruit-motor-shield-v2-for-arduino/faq#faq-13
-pca.channels[2].duty_cycle = 0xffff
-motor4 = motor.DCMotor(pca.channels[0], pca.channels[1])
+#pca.channels[2].duty_cycle = 0xffff
+motor1 = motor.DCMotor(pca.channels[0], pca.channels[2])
+motor2 = motor.DCMotor(pca.channels[1], pca.channels[3])
+motor3 = motor.DCMotor(pca.channels[4], pca.channels[6])
+motor4 = motor.DCMotor(pca.channels[5], pca.channels[7])
 
 print("Forwards slow")
 motor4.throttle = 0.5
@@ -36,6 +39,9 @@ print("throttle:", motor4.throttle)
 time.sleep(5)
 
 print("Forwards")
+motor1.throttle = 1
+motor2.throttle = 1
+motor3.throttle = 1
 motor4.throttle = 1
 print("throttle:", motor4.throttle)
 time.sleep(5)
@@ -51,6 +57,9 @@ print("throttle:", motor4.throttle)
 time.sleep(5)
 
 print("Stop")
+motor1.throttle = 0
+motor2.throttle = 0
+motor3.throttle = 0
 motor4.throttle = 0
 print("throttle:", motor4.throttle)
 time.sleep(5)
