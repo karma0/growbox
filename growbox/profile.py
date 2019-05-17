@@ -55,6 +55,11 @@ class Profile:
                 elif data['humidity'] > self.humidity.maxval:
                     self.box.fans.exchange()
 
+        if self.co2 is not None:
+            if not self.co2(data['co2']):
+                self.box.mister.off()
+                self.box.fans.exchange()
+
         if self.air_exchange_rate is not None:
             if self.air_exchange_rate():
                 self.box.mister.off()
@@ -77,8 +82,8 @@ class Profile:
         #    self.celsius = InRange(18, 24)
         if self.humidity is None:
             self.humidity = InRange(95, 100)
-        #if self.co2 is None:
-        #    self.co2 = InRange(minval=5000)
+        if self.co2 is None:
+            self.co2 = InRange(maxval=2000)
         if self.air_exchange_rate is None:
             self.air_exchange_rate = Timer(minutes=1)
 

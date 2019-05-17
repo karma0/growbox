@@ -31,7 +31,7 @@ class Relay:
 
     def humidify(self):
         self.on()
-        time.sleep(5)
+        time.sleep(10)
         self.off()
 
     @property
