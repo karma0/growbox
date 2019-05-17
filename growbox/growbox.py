@@ -10,6 +10,7 @@ from collections import OrderedDict
 
 import logging
 
+from growbox.dev.display.oled import Display
 from growbox.dev.actuate.fans import Fans
 from growbox.dev.actuate.relay import QuadRelay
 from growbox.dev.sense.ds18b20 import DS18B20
@@ -42,6 +43,7 @@ class GrowBox:
     def __init__(self, profile=None, logfile='growbox.log'):
         self.logfile = logfile
 
+        self.display = Display()
         self.ds18b20 = DS18B20()
         self.bme280 = BME280()
         self.ccs811 = CCS811()
@@ -96,6 +98,7 @@ class GrowBox:
                         data[field] = value
 
                 writer.writerow(data)
+                self.display(data)
 
                 logger.info("Processing data")
                 self.process(data)

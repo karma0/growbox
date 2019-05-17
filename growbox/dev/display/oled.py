@@ -27,3 +27,7 @@ class Display:
             for row in self.display_texts:
                 draw.text((0, offset), row, font=self.font2, fill='white')
                 offset += 14
+
+    def __call__(self, data):
+        self.display_texts = [f"{key}: val" for key, val in data]
+        self.show()
