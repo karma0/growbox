@@ -10,16 +10,15 @@ from collections import OrderedDict
 
 import logging
 
+from growbox.dev.actuate.fans import Fans
 from growbox.dev.actuate.relay import QuadRelay
-from growbox.dev.io.onewire import DS18B20
-from growbox.dev.io.sx1509 import SX1509IO
+from growbox.dev.sense.ds18b20 import DS18B20
 from growbox.dev.sense.bme280 import BME280
-#from growbox.dev.sense.ccs811 import CCS811
+from growbox.dev.sense.ccs811 import CCS811
 from growbox.dev.sense.veml6075 import VEML6075
 from growbox.dev.sense.tsl2591 import TSL2591
 
 from growbox.facade.relay import Relay
-from growbox.facade.fans import Fans
 from growbox.profile import Profile
 
 
@@ -45,25 +44,23 @@ class GrowBox:
 
         self.ds18b20 = DS18B20()
         self.bme280 = BME280()
-        #self.ccs811 = CCS811()
+        self.ccs811 = CCS811()
         self.lux = TSL2591()
         self.veml = VEML6075()
         self.quad_relay = QuadRelay()
         self.mister = Relay(self.quad_relay, relay_id=self.relays.get('mister'))
-        self.fans = Fans(SX1509IO())
+        self.fans = Fans()
 
         self.process = Profile(growbox=self, profile=profile)
         self.process.profile = {}
 
         self.fields = OrderedDict([
             ('localtime', time),
-            ('celsius', self.bme280),
-            ('fahrenheit', self.bme280),
-            ('altitude', self.bme280),
+            ('celsius', self.ds18b20),
+            ('fahrenheit', self.ds18b20),
             ('humidity', self.bme280),
-            #('co2', self.ccs811),
-            #('tvoc', self.ccs811),
-            ('temperature', self.ds18b20),
+            ('co2', self.ccs811),
+            ('tvoc', self.ccs811),
             ('lux', self.lux),
             ('uv_index', self.veml),
             ('uva', self.veml),
