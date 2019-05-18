@@ -36,5 +36,6 @@ class Display:
                 offset += 14
 
     def __call__(self, data):
+        logger.info(f"Displaying data: {data}")
         self.display_texts = [f"{key}: val" for key, val in data]
         self.show()
