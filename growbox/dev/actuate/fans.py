@@ -43,7 +43,7 @@ class Fans:
             self.address = address
 
         self.i2c = busio.I2C(SCL, SDA)
-        self.pca = PCA9685(self.i2c, address=address)
+        self.pca = PCA9685(self.i2c, address=self.address)
         self.pca.frequency = 100
 
         if pins is not None:
