@@ -6,9 +6,10 @@ import os
 import sys
 import time
 
-from demo_opts import get_device
 from luma.core.render import canvas
 from PIL import ImageFont
+
+from growbox.dev.display.demo_opts import get_device
 
 
 class Display:
