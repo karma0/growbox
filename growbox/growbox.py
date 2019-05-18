@@ -74,7 +74,6 @@ class GrowBox:
 
     def begin(self):
         self.quad_relay.begin()
-        self.fans.fans.begin()
 
     def run(self):
         self.begin()
