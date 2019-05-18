@@ -30,8 +30,11 @@ class Motors(Enum):
 class Fans:
     address = 0x40
 
-    upper_fans = (Motors.MOTOR1, Motors.MOTOR2)
-    lower_fans = (Motors.MOTOR3, Motors.MOTOR4)
+    upper_fan_pins = (Motors.MOTOR1, Motors.MOTOR2)
+    lower_fan_pins = (Motors.MOTOR3, Motors.MOTOR4)
+
+    upper_fans = []
+    lower_fans = []
 
     status = OrderedDict([
         ('upper_fans', 0),
@@ -47,11 +50,11 @@ class Fans:
         self.pca.frequency = 100
 
         if pins is not None:
-            self.upper_fans = pins[:len(pins)//2]
-            self.lower_fans = pins[len(pins)//2:]
+            self.upper_fan_pins = pins[:len(pins)//2]
+            self.lower_fan_pins = pins[len(pins)//2:]
 
-        self.fans = [self.get_motor(motor) for motor in
-                     self.upper_fans + self.lower_fans]
+        self.upper_fans = [self.get_motor(motor) for motor in self.upper_fans]
+        self.lower_fans = [self.get_motor(motor) for motor in self.lower_fans]
 
     def get_motor(self, motor):
         return DCMotor(self.pca.channels[motor.value],
@@ -62,28 +65,28 @@ class Fans:
         self.status['upper_fans'] = 1
 
         for motor in self.upper_fans:
-            self.fans[motor.value].throttle = 1
+            motor.throttle = 1
 
     def upper_fans_off(self):
         logger.info("Upper fans off.")
         self.status['upper_fans'] = 0
 
         for motor in self.upper_fans:
-            self.fans[motor.value].throttle = None
+            motor.throttle = None
 
     def lower_fans_on(self):
         logger.info("Lower fans on.")
         self.status['lower_fans'] = 1
 
         for motor in self.lower_fans:
-            self.fans[motor.value].throttle = 1
+            motor.throttle = 1
 
     def lower_fans_off(self):
         logger.info("Lower fans off.")
         self.status['lower_fans'] = 0
 
         for motor in self.lower_fans:
-            self.fans[motor.value].throttle = None
+            motor.throttle = None
 
     def add_oxygen(self):
         logger.info("Adding oxygen")
