@@ -5,11 +5,16 @@
 import os
 import sys
 import time
+import logging
 
 from luma.core.render import canvas
 from PIL import ImageFont
 
 from growbox.dev.display.demo_opts import get_device
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 class Display:
