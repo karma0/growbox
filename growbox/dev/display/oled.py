@@ -25,7 +25,7 @@ class Display:
     def __init__(self):
         font_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                     'fonts', 'C&C Red Alert [INET].ttf'))
-        logger.info("Using font path: {font_path}")
+        logger.info(f"Using font path: {font_path}")
         self.font2 = ImageFont.truetype(font_path, 12)
 
     def show(self):
