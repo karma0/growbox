@@ -46,7 +46,7 @@ class Display:
     def __call__(self, data):
         logger.info(f"Displaying data: {data}")
         self.display_texts = [
-            f"{key}: {val}"
+            f"{key}: {val:.4f}"
             for key, val in data.items()
             if key not in self.skip_displaying
         ]
