@@ -109,12 +109,12 @@ def main():
 
     #lights = Lights()
     #red = 0x100000
-    red = (255, 0, 0)
-    yellow = (255, 150, 0)
-    green = (0, 255, 0)
-    cyan = (0, 255, 255)
-    blue = (0, 0, 255)
-    purple = (180, 0, 255)
+    red = (255, 0, 0, 0)
+    yellow = (255, 150, 0, 0)
+    green = (0, 255, 0, 0)
+    cyan = (0, 255, 255, 0)
+    blue = (0, 0, 255, 0)
+    purple = (180, 0, 255, 0)
 
     try:
         while True:
