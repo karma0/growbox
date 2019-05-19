@@ -5,6 +5,10 @@
 
 import time
 import logging
+from operator import add, sub
+
+import board
+import neopixel
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -13,8 +17,18 @@ logger.setLevel(logging.DEBUG)
 
 
 class Lights:
+    pin = board.D21
+    pixel_count = 14
+    order = neopixel.RGBW
+
+    value = [0, 0, 0, 0]  # RGBW
+
     def __init__(self):
-        pass
+        self.pixels = neopixel.NeoPixel(
+            self.pin,
+            self.pixel_count,
+            pixel_order=self.order,
+        )
 
     def on(self):
         logger.info(f"Lights on.")
@@ -24,8 +38,26 @@ class Lights:
         logger.info(f"Lights off.")
         self.quad_relay.off(self._id)
 
-    def darken(self):
-        pass
+    def darken(self, red=1, green=1, blue=1, white=1):
+        self.value = list(map(sub, self.value, [red, green, blue, white]))
+        self.pixels.fill(self.value)
 
-    def brighten(self):
-        pass
+    def brighten(self, red=1, green=1, blue=1, white=1):
+        self.value = list(map(add, self.value, [red, green, blue, white]))
+        self.pixels.fill(self.value)
+
+
+def main():
+    lights = Lights()
+
+    for i  in range(255):
+        lights.brighten(i, i, i, i)
+        time.sleep(.01)
+
+    for i  in range(255):
+        lights.darken(i, i, i, i)
+        time.sleep(.01)
+
+
+if __name__ == "__main__":
+    main()
