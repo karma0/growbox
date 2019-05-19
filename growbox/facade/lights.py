@@ -116,16 +116,19 @@ def main():
     blue = (0, 0, 255)
     purple = (180, 0, 255)
 
-
-    pixels.fill(red)
-    pixels.show()
-    time.sleep(1)
-    pixels.fill(green)
-    pixels.show()
-    time.sleep(1)
-    pixels.fill(blue)
-    pixels.show()
-    time.sleep(1)
+    try:
+        while True:
+            pixels.fill(red)
+            pixels.show()
+            time.sleep(1)
+            pixels.fill(green)
+            pixels.show()
+            time.sleep(1)
+            pixels.fill(blue)
+            pixels.show()
+            time.sleep(1)
+    except KeyboardInterrupt:
+        pixels.deinit()
 
     #for i in range(len(lights.pixels)):
     #    lights.pixels[i] = red
