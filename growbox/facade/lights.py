@@ -103,6 +103,10 @@ class Lights:
 def main():
     lights = Lights()
 
+    red = 0x100000
+    lights.pixels[::2] = [red] * (len(lights.pixels) // 2)
+    time.sleep(2)
+
     # Comment this line out if you have RGBW/GRBW NeoPixels
     # lights.pixels.fill((255, 0, 0))
     # Uncomment this line if you have RGBW/GRBW NeoPixels
@@ -131,7 +135,7 @@ def main():
     #lights.pixels.show()
     #time.sleep(1)
 
-    lights.rainbow_cycle(0.1)    # rainbow cycle with 1ms delay per step
+    #lights.rainbow_cycle(0.1)    # rainbow cycle with 1ms delay per step
 
     #for _ in range(255):
     #    lights.brighten()
