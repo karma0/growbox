@@ -30,6 +30,7 @@ class Lights:
             auto_write=False,
             pixel_order=self.order,
         )
+        self.pixels.show()  # Reset the pixels
 
     @property
     def lights(self):
@@ -118,6 +119,13 @@ def main():
     # lights.pixels.fill((0, 0, 255))
     # Uncomment this line if you have RGBW/GRBW NeoPixels
     lights.pixels.fill((0, 0, 255, 0))
+    lights.pixels.show()
+    time.sleep(1)
+
+    # Comment this line out if you have RGBW/GRBW NeoPixels
+    # lights.pixels.fill((0, 0, 255))
+    # Uncomment this line if you have RGBW/GRBW NeoPixels
+    lights.pixels.fill((0, 0, 0, 255))
     lights.pixels.show()
     time.sleep(1)
 
