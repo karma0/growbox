@@ -124,7 +124,7 @@ def main():
         logger.info("Adding oxygen...")
         fans.add_oxygen()
         logger.info("Finished adding oxygen.")
-        time.sleep(5)
+        #time.sleep(5)
         logger.info("Removing C02...")
         fans.remove_co2()
         logger.info("Finished removing C02.")
