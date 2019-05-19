@@ -27,7 +27,7 @@ class Lights:
         self.pixels = neopixel.NeoPixel(
             self.pin,
             self.pixel_count,
-            autowrite=False,
+            auto_write=False,
             pixel_order=self.order,
         )
 
