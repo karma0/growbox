@@ -28,8 +28,8 @@ class Lights:
             self.pin,
             self.pixel_count,
             brightness=.5,
-            #auto_write=False,
-            #pixel_order=self.order,
+            auto_write=False,
+            pixel_order=self.order,
         )
         self.pixels.show()  # Reset the pixels
 
