@@ -72,7 +72,7 @@ class Lights:
 
     def display(self):
         self.pixels.fill(self.value)
-        self.show()
+        self.pixels.show()
 
     def on(self):
         logger.info("Lights on.")
