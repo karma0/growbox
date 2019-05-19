@@ -17,7 +17,8 @@ logger.setLevel(logging.DEBUG)
 
 
 class Lights:
-    pin = board.D10
+    #pin = board.D10  # MOSI (to run as user)
+    pin = board.D20
     pixel_count = 14
     order = neopixel.GRBW
 
