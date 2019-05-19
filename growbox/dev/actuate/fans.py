@@ -30,8 +30,8 @@ class Motors(Enum):
 class Fans:
     address = 0x40
 
-    upper_fan_pins = (Motors.MOTOR1, Motors.MOTOR2)
-    lower_fan_pins = (Motors.MOTOR3, Motors.MOTOR4)
+    upper_fan_pins = (Motors.MOTOR3, Motors.MOTOR4)
+    lower_fan_pins = (Motors.MOTOR1, Motors.MOTOR2)
 
     upper_fans = []
     lower_fans = []
