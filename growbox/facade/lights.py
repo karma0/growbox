@@ -27,9 +27,9 @@ class Lights:
         self.pixels = neopixel.NeoPixel(
             self.pin,
             self.pixel_count,
-            brightness=.2,
-            auto_write=False,
-            pixel_order=self.order,
+            #brightness=.2,
+            #auto_write=False,
+            #pixel_order=self.order,
         )
         self.pixels.show()  # Reset the pixels
 
@@ -102,8 +102,12 @@ class Lights:
 
 def main():
     lights = Lights()
-
     red = 0x100000
+
+    for i in range(len(lights.pixels)):
+        lights.pixels[i] = red
+    time.sleep(2)
+
     lights.pixels[::2] = [red] * (len(lights.pixels) // 2)
     time.sleep(2)
 
