@@ -4,7 +4,7 @@
 
  [Service]
  Type=idle
- ExecStart=/usr/bin/python3 /home/pi/berryconda3/bin/growbox
+ ExecStart=/home/pi/berryconda3/bin/python /home/pi/berryconda3/bin/growbox
  User=pi
  Group=pi
 
