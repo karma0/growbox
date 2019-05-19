@@ -106,30 +106,30 @@ def main():
     # Comment this line out if you have RGBW/GRBW NeoPixels
     # lights.pixels.fill((255, 0, 0))
     # Uncomment this line if you have RGBW/GRBW NeoPixels
-    lights.pixels.fill((255, 0, 0, 0))
-    lights.pixels.show()
-    time.sleep(1)
+    #lights.pixels.fill((255, 0, 0, 0))
+    #lights.pixels.show()
+    #time.sleep(1)
 
     # Comment this line out if you have RGBW/GRBW NeoPixels
     # lights.pixels.fill((0, 255, 0))
     # Uncomment this line if you have RGBW/GRBW NeoPixels
-    lights.pixels.fill((0, 255, 0, 0))
-    lights.pixels.show()
-    time.sleep(1)
+    #lights.pixels.fill((0, 255, 0, 0))
+    #lights.pixels.show()
+    #time.sleep(1)
 
     # Comment this line out if you have RGBW/GRBW NeoPixels
     # lights.pixels.fill((0, 0, 255))
     # Uncomment this line if you have RGBW/GRBW NeoPixels
-    lights.pixels.fill((0, 0, 255, 0))
-    lights.pixels.show()
-    time.sleep(1)
+    #lights.pixels.fill((0, 0, 255, 0))
+    #lights.pixels.show()
+    #time.sleep(1)
 
     # Comment this line out if you have RGBW/GRBW NeoPixels
     # lights.pixels.fill((0, 0, 255))
     # Uncomment this line if you have RGBW/GRBW NeoPixels
-    lights.pixels.fill((0, 0, 0, 255))
-    lights.pixels.show()
-    time.sleep(1)
+    #lights.pixels.fill((0, 0, 0, 255))
+    #lights.pixels.show()
+    #time.sleep(1)
 
     lights.rainbow_cycle(0.001)    # rainbow cycle with 1ms delay per step
 
@@ -141,12 +141,12 @@ def main():
     #    lights.darken()
     #    time.sleep(.01)
 
-    lights.off()
-    time.sleep(5)
-    lights.on()
-    time.sleep(5)
-    lights.off()
-    time.sleep(1)
+    #lights.off()
+    #time.sleep(5)
+    #lights.on()
+    #time.sleep(5)
+    #lights.off()
+    #time.sleep(1)
 
 
 if __name__ == "__main__":
