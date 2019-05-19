@@ -21,7 +21,7 @@ class Lights:
     pixel_count = 14
     order = neopixel.RGBW
 
-    value = [0, 0, 0, 0]  # RGBW
+    _value = [0, 0, 0, 0]  # RGBW
 
     def __init__(self):
         self.pixels = neopixel.NeoPixel(
@@ -29,6 +29,16 @@ class Lights:
             self.pixel_count,
             pixel_order=self.order,
         )
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, rgbw):
+        rgbw = [val if val < 256 else 255 for val in rgbw]
+        rgbw = [val if val > 0 else 0 for val in rgbw]
+        self._value = rgbw
 
     def on(self):
         logger.info("Lights on.")
