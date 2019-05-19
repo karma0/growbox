@@ -19,7 +19,7 @@ logger.setLevel(logging.DEBUG)
 class Lights:
     pin = board.D10
     pixel_count = 14
-    order = neopixel.RGBW
+    order = neopixel.GRBW
 
     _value = [0, 0, 0, 0]  # RGBW
 
