@@ -2,11 +2,13 @@
  Description=GrowBox Service
  After=multi-user.target
 
- [Service]
+[Service]
  Type=idle
  ExecStart=/home/pi/berryconda3/bin/python /home/pi/berryconda3/bin/growbox
  User=pi
  Group=pi
+ Restart=always
+ RestartSec=30
 
  [Install]
  WantedBy=multi-user.target
