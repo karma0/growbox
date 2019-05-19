@@ -104,8 +104,10 @@ class Lights:
 def main():
     pixel_pin = board.D10
     num_pixels = 14
+    order = neopixel.GRBW
 
-    pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.3, auto_write=False)
+    pixels = neopixel.NeoPixel(pixel_pin, num_pixels, pixel_order=order,
+                               brightness=0.3, auto_write=False)
 
     #lights = Lights()
     #red = 0x100000
