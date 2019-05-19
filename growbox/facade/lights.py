@@ -27,6 +27,7 @@ class Lights:
         self.pixels = neopixel.NeoPixel(
             self.pin,
             self.pixel_count,
+            autowrite=False,
             pixel_order=self.order,
         )
 
@@ -39,6 +40,35 @@ class Lights:
         rgbw = [val if val < 256 else 255 for val in rgbw]
         rgbw = [val if val > 0 else 0 for val in rgbw]
         self._value = rgbw
+
+    def wheel(pos):
+        # Input a value 0 to 255 to get a color value.
+        # The colours are a transition r - g - b - back to r.
+        if pos < 0 or pos > 255:
+            r = g = b = 0
+        elif pos < 85:
+            r = int(pos * 3)
+            g = int(255 - pos*3)
+            b = 0
+        elif pos < 170:
+            pos -= 85
+            r = int(255 - pos*3)
+            g = 0
+            b = int(pos*3)
+        else:
+            pos -= 170
+            r = 0
+            g = int(pos*3)
+            b = int(255 - pos*3)
+        return (r, g, b) if ORDER == neopixel.RGB or ORDER == neopixel.GRB else (r, g, b, 0)
+
+    def rainbow_cycle(self, wait):
+        for j in range(255):
+            for i in range(num_pixels):
+                pixel_index = (i * 256 // num_pixels) + j
+                pixels[i] = wheel(pixel_index & 255)
+            pixels.show()
+            time.sleep(wait)
 
     def on(self):
         logger.info("Lights on.")
@@ -62,13 +92,19 @@ class Lights:
 def main():
     lights = Lights()
 
-    for i  in range(255):
-        lights.brighten(i, i, i, i)
+    for _ in range(255):
+        lights.brighten()
         time.sleep(.01)
 
-    for i  in range(255):
-        lights.darken(i, i, i, i)
+    for _ in range(255):
+        lights.darken()
         time.sleep(.01)
+
+    lights.off()
+    time.sleep(5)
+    lights.on()
+    time.sleep(5)
+    lights.off()
 
 
 if __name__ == "__main__":
