@@ -41,7 +41,7 @@ class GrowBox:
         ('none', 3),
     ])
 
-    def __init__(self, profile=None, logfile='growbox.log'):
+    def __init__(self, profile=None, logfile='/home/pi/growbox.log'):
         self.logfile = logfile
 
         self.display = Display()
