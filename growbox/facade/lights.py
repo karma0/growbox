@@ -31,12 +31,14 @@ class Lights:
         )
 
     def on(self):
-        logger.info(f"Lights on.")
-        self.quad_relay.on(self._id)
+        logger.info("Lights on.")
+        self.value = [255, 255, 255, 255]
+        self.pixels.fill(self.value)
 
     def off(self):
-        logger.info(f"Lights off.")
-        self.quad_relay.off(self._id)
+        logger.info("Lights off.")
+        self.value = [0, 0, 0, 0]  # RGBW
+        self.pixels.fill(self.value)
 
     def darken(self, red=1, green=1, blue=1, white=1):
         self.value = list(map(sub, self.value, [red, green, blue, white]))
