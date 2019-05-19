@@ -53,8 +53,8 @@ class Fans:
             self.upper_fan_pins = pins[:len(pins)//2]
             self.lower_fan_pins = pins[len(pins)//2:]
 
-        self.upper_fans = [self.get_motor(motor) for motor in self.upper_fans]
-        self.lower_fans = [self.get_motor(motor) for motor in self.lower_fans]
+        self.upper_fans = [self.get_motor(motor) for motor in self.upper_fan_pins]
+        self.lower_fans = [self.get_motor(motor) for motor in self.lower_fan_pins]
 
     def get_motor(self, motor):
         return DCMotor(self.pca.channels[motor.value],
