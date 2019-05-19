@@ -106,7 +106,7 @@ def main():
 
     for i in range(len(lights.pixels)):
         lights.pixels[i] = red
-    time.sleep(2)
+    time.sleep(5)
 
     lights.pixels[::2] = [red] * (len(lights.pixels) // 2)
     time.sleep(2)
