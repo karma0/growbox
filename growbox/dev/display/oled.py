@@ -3,8 +3,6 @@
 """Display module"""
 
 import os
-import sys
-import time
 import logging
 
 from luma.core.render import canvas
@@ -24,6 +22,7 @@ class Display:
         'localtime',
         'celsius',
         'tvoc',
+        'lights',
         'mister_status',
         'upper_fans_status',
         'lower_fans_status',
