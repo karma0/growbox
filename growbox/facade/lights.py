@@ -88,11 +88,11 @@ class Lights:
         self.value = [0, 0, 0, 0]  # RGBW
         self.display()
 
-    def darken(self, red=1, green=1, blue=1, white=1):
+    def darker(self, red=1, green=1, blue=1, white=1):
         self.value = list(map(sub, self.value, [red, green, blue, white]))
         self.display()
 
-    def brighten(self, red=1, green=1, blue=1, white=1):
+    def brighter(self, red=1, green=1, blue=1, white=1):
         self.value = list(map(add, self.value, [red, green, blue, white]))
         self.display()
 
