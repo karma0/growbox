@@ -96,29 +96,28 @@ class Lights:
 def main():
     lights = Lights()
 
-    while True:
-        # Comment this line out if you have RGBW/GRBW NeoPixels
-        lights.pixels.fill((255, 0, 0))
-        # Uncomment this line if you have RGBW/GRBW NeoPixels
-        # pixels.fill((255, 0, 0, 0))
-        lights.pixels.show()
-        time.sleep(1)
+    # Comment this line out if you have RGBW/GRBW NeoPixels
+    # lights.pixels.fill((255, 0, 0))
+    # Uncomment this line if you have RGBW/GRBW NeoPixels
+    lights.pixels.fill((255, 0, 0, 0))
+    lights.pixels.show()
+    time.sleep(1)
 
-        # Comment this line out if you have RGBW/GRBW NeoPixels
-        lights.pixels.fill((0, 255, 0))
-        # Uncomment this line if you have RGBW/GRBW NeoPixels
-        # pixels.fill((0, 255, 0, 0))
-        lights.pixels.show()
-        time.sleep(1)
+    # Comment this line out if you have RGBW/GRBW NeoPixels
+    # lights.pixels.fill((0, 255, 0))
+    # Uncomment this line if you have RGBW/GRBW NeoPixels
+    lights.pixels.fill((0, 255, 0, 0))
+    lights.pixels.show()
+    time.sleep(1)
 
-        # Comment this line out if you have RGBW/GRBW NeoPixels
-        lights.pixels.fill((0, 0, 255))
-        # Uncomment this line if you have RGBW/GRBW NeoPixels
-        # pixels.fill((0, 0, 255, 0))
-        lights.pixels.show()
-        time.sleep(1)
+    # Comment this line out if you have RGBW/GRBW NeoPixels
+    # lights.pixels.fill((0, 0, 255))
+    # Uncomment this line if you have RGBW/GRBW NeoPixels
+    lights.pixels.fill((0, 0, 255, 0))
+    lights.pixels.show()
+    time.sleep(1)
 
-        lights.rainbow_cycle(0.001)    # rainbow cycle with 1ms delay per step
+    lights.rainbow_cycle(0.001)    # rainbow cycle with 1ms delay per step
 
     #for _ in range(255):
     #    lights.brighten()
