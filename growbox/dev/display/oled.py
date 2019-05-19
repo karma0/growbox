@@ -20,6 +20,15 @@ logger.setLevel(logging.INFO)
 class Display:
     device = get_device()
 
+    skip_displaying = (
+        'localtime',
+        'celsius',
+        'tvoc',
+        'mister_status',
+        'upper_fans_status',
+        'lower_fans_status',
+    )
+
     display_texts = []
 
     def __init__(self):
@@ -37,9 +46,10 @@ class Display:
 
     def __call__(self, data):
         logger.info(f"Displaying data: {data}")
-        self.display_texts = [
-            f"{key}: {val}"
-            for key, val in data.items()
-            if key != 'localtime'
-        ]
+        self.display_texts = ['  GrowBox'] + \
+            [
+                f"{key}: {val}"
+                for key, val in data.items()
+                if key not in self.skip_displaying
+            ]
         self.show()
