@@ -155,6 +155,7 @@ def main():
     #time.sleep(5)
     #lights.off()
     #time.sleep(1)
+    lights.pixels.deinit()
 
 
 if __name__ == "__main__":
