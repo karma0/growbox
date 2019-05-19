@@ -28,7 +28,7 @@ class Lights:
         self.pixels = neopixel.NeoPixel(
             self.pin,
             self.pixel_count,
-            #brightness=.2,
+            brightness=.5,
             #auto_write=False,
             #pixel_order=self.order,
         )
@@ -139,6 +139,8 @@ def main():
             pixels.show()
             time.sleep(1)
     except KeyboardInterrupt:
+        pixels.fill((0, 0, 0, 0))
+        pixels.show()
         pixels.deinit()
 
     #for i in range(len(lights.pixels)):
