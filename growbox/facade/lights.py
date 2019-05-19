@@ -121,7 +121,7 @@ def main():
     lights.pixels.show()
     time.sleep(1)
 
-    lights.rainbow_cycle(0.001)    # rainbow cycle with 1ms delay per step
+    #lights.rainbow_cycle(0.001)    # rainbow cycle with 1ms delay per step
 
     #for _ in range(255):
     #    lights.brighten()
