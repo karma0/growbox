@@ -46,6 +46,7 @@ class Lights:
         rgbw = [val if val < 256 else 255 for val in rgbw]
         rgbw = [val if val > 0 else 0 for val in rgbw]
         self._value = rgbw
+        self.display()
 
     def wheel(self, pos):
         # Input a value 0 to 255 to get a color value.
@@ -83,20 +84,20 @@ class Lights:
     def on(self):
         logger.info("Lights on.")
         self.value = [255, 255, 255, 255]
-        self.display()
+        #self.display()
 
     def off(self):
         logger.info("Lights off.")
         self.value = [0, 0, 0, 0]  # RGBW
-        self.display()
+        #self.display()
 
     def darker(self, red=1, green=1, blue=1, white=1):
         self.value = list(map(sub, self.value, [red, green, blue, white]))
-        self.display()
+        #self.display()
 
     def brighter(self, red=1, green=1, blue=1, white=1):
         self.value = list(map(add, self.value, [red, green, blue, white]))
-        self.display()
+        #self.display()
 
 
 def main():
@@ -130,7 +131,7 @@ def main():
     lights.pixels.show()
     time.sleep(1)
 
-    #lights.rainbow_cycle(0.001)    # rainbow cycle with 1ms delay per step
+    lights.rainbow_cycle(0.001)    # rainbow cycle with 1ms delay per step
 
     #for _ in range(255):
     #    lights.brighten()
@@ -140,10 +141,10 @@ def main():
     #    lights.darken()
     #    time.sleep(.01)
 
-    #lights.off()
-    #time.sleep(5)
-    #lights.on()
-    #time.sleep(5)
+    lights.off()
+    time.sleep(5)
+    lights.on()
+    time.sleep(5)
     lights.off()
     time.sleep(1)
 
