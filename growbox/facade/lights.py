@@ -41,7 +41,7 @@ class Lights:
         rgbw = [val if val > 0 else 0 for val in rgbw]
         self._value = rgbw
 
-    def wheel(pos):
+    def wheel(self, pos):
         # Input a value 0 to 255 to get a color value.
         # The colours are a transition r - g - b - back to r.
         if pos < 0 or pos > 255:
@@ -60,33 +60,37 @@ class Lights:
             r = 0
             g = int(pos*3)
             b = int(255 - pos*3)
-        return (r, g, b) if ORDER == neopixel.RGB or ORDER == neopixel.GRB else (r, g, b, 0)
+        return (r, g, b) if self.order == neopixel.RGB or self.order == neopixel.GRB else (r, g, b, 0)
 
     def rainbow_cycle(self, wait):
         for j in range(255):
-            for i in range(num_pixels):
-                pixel_index = (i * 256 // num_pixels) + j
-                pixels[i] = wheel(pixel_index & 255)
-            pixels.show()
+            for i in range(self.pixel_count):
+                pixel_index = (i * 256 // self.pixel_count) + j
+                self.pixels[i] = self.wheel(pixel_index & 255)
+            self.pixels.show()
             time.sleep(wait)
+
+    def display(self):
+        self.pixels.fill(self.value)
+        self.show()
 
     def on(self):
         logger.info("Lights on.")
         self.value = [255, 255, 255, 255]
-        self.pixels.fill(self.value)
+        self.display()
 
     def off(self):
         logger.info("Lights off.")
         self.value = [0, 0, 0, 0]  # RGBW
-        self.pixels.fill(self.value)
+        self.display()
 
     def darken(self, red=1, green=1, blue=1, white=1):
         self.value = list(map(sub, self.value, [red, green, blue, white]))
-        self.pixels.fill(self.value)
+        self.display()
 
     def brighten(self, red=1, green=1, blue=1, white=1):
         self.value = list(map(add, self.value, [red, green, blue, white]))
-        self.pixels.fill(self.value)
+        self.display()
 
 
 def main():
