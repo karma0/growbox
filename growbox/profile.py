@@ -44,26 +44,26 @@ class Profile:
                     and time.localtime().tm_hour > 6 \
                     and time.localtime().tm_hour < 20:
                 if data['lux'] < self.lux.minval:
-                    self.box.lights.brighter()
+                    self.box.lights.brighter(10, 10, 10, 10)
                 elif data['lux'] > self.lux.maxval:
-                    self.box.lights.darker()
+                    self.box.lights.darker(10, 10, 10, 10)
 
         if self.humidity is not None:
             if not self.humidity(data['humidity']):
                 if data['humidity'] < self.humidity.minval:
                     self.box.mister.humidify()
                 elif data['humidity'] > self.humidity.maxval:
-                    self.box.fans.exchange()
+                    self.box.fans.exchange(30)
 
         if self.co2 is not None:
             if not self.co2(data['co2']):
                 self.box.mister.off()
-                self.box.fans.exchange()
+                self.box.fans.exchange(30)
 
         if self.air_exchange_rate is not None:
             if self.air_exchange_rate():
                 self.box.mister.off()
-                self.box.fans.exchange()
+                self.box.fans.exchange(30)
 
     @property
     def profile(self):
@@ -85,7 +85,7 @@ class Profile:
         if self.co2 is None:
             self.co2 = InRange(maxval=2000)
         if self.air_exchange_rate is None:
-            self.air_exchange_rate = Timer(minutes=1)
+            self.air_exchange_rate = Timer(minutes=20)
 
     @property
     def growbox(self):

@@ -88,23 +88,23 @@ class Fans:
         for motor in self.lower_fans:
             motor.throttle = None
 
-    def add_oxygen(self):
+    def add_oxygen(self, duration=5):
         logger.info("Adding oxygen")
         self.upper_fans_on()
-        time.sleep(5)
+        time.sleep(duration)
         self.upper_fans_off()
 
-    def remove_co2(self):
+    def remove_co2(self, duration=5):
         logger.info("Removing CO2")
         self.lower_fans_on()
-        time.sleep(5)
+        time.sleep(duration)
         self.lower_fans_off()
 
-    def exchange(self):
+    def exchange(self, duration=5):
         logger.info("Exchanging air.")
         self.upper_fans_on()
         self.lower_fans_on()
-        time.sleep(5)
+        time.sleep(duration)
         self.upper_fans_off()
         self.lower_fans_off()
 

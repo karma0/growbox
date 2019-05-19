@@ -45,10 +45,9 @@ class Display:
 
     def __call__(self, data):
         logger.info(f"Displaying data: {data}")
-        self.display_texts = ['  GrowBox'] + \
-            [
-                f"{key}: {val}"
-                for key, val in data.items()
-                if key not in self.skip_displaying
-            ]
+        self.display_texts = [
+            f"{key}: {val}"
+            for key, val in data.items()
+            if key not in self.skip_displaying
+        ]
         self.show()
