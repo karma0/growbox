@@ -102,15 +102,37 @@ class Lights:
 
 
 def main():
-    lights = Lights()
-    red = 0x100000
+    pixel_pin = board.D10
+    num_pixels = 14
 
-    for i in range(len(lights.pixels)):
-        lights.pixels[i] = red
-    time.sleep(5)
+    pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.3, auto_write=False)
 
-    lights.pixels[::2] = [red] * (len(lights.pixels) // 2)
-    time.sleep(2)
+    #lights = Lights()
+    #red = 0x100000
+    red = (255, 0, 0)
+    yellow = (255, 150, 0)
+    green = (0, 255, 0)
+    cyan = (0, 255, 255)
+    blue = (0, 0, 255)
+    purple = (180, 0, 255)
+
+
+    pixels.fill(red)
+    pixels.show()
+    time.sleep(1)
+    pixels.fill(green)
+    pixels.show()
+    time.sleep(1)
+    pixels.fill(blue)
+    pixels.show()
+    time.sleep(1)
+
+    #for i in range(len(lights.pixels)):
+    #    lights.pixels[i] = red
+    #time.sleep(5)
+
+    #lights.pixels[::2] = [red] * (len(lights.pixels) // 2)
+    #time.sleep(2)
 
     # Comment this line out if you have RGBW/GRBW NeoPixels
     # lights.pixels.fill((255, 0, 0))
@@ -156,7 +178,7 @@ def main():
     #time.sleep(5)
     #lights.off()
     #time.sleep(1)
-    lights.pixels.deinit()
+    #lights.pixels.deinit()
 
 
 if __name__ == "__main__":
