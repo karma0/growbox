@@ -5,8 +5,8 @@ import adafruit_ccs811
 
 class CCS811:
     """AF CP CCS811 wrapper"""
-    address = 0x5A
-    #address = 0x5B
+    #address = 0x5A
+    address = 0x5B
 
     def __init__(self, address=None):
         self.i2c = busio.I2C(board.SCL, board.SDA)

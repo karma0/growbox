@@ -61,7 +61,7 @@ class GrowBox:
         self.fields = OrderedDict([
             ('localtime', time),
             ('celsius', self.ds18b20),
-            ('fahrenheit', self.ds18b20),
+            ('fahrenheit', self.bme280),
             ('humidity', self.bme280),
             ('co2', self.ccs811),
             ('tvoc', self.ccs811),
