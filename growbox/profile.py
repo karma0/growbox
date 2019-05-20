@@ -57,7 +57,6 @@ class Profile:
 
         if self.co2 is not None:
             if not self.co2(data['co2']):
-                self.box.mister.off()
                 self.box.fans.exchange(30)
 
         if self.air_exchange_rate is not None:
