@@ -8,7 +8,9 @@ class CCS811:
     address = 0x5A
     #address = 0x5B
 
-    def __init__(self, address=None):
+    def __init__(self, environment=None, address=None):
+        self.environment = environment
+
         self.i2c = busio.I2C(board.SCL, board.SDA)
 
         if address is not None:
@@ -22,6 +24,13 @@ class CCS811:
 
         # Set temp offset to a sane default
         self.set_temperature_offset(25)
+
+    def calibrate_to_env(self, environment=None):
+        """Update environment for calibration"""
+        env = self.environment if environment is None else environment
+        if env is not None:
+            self.ccs811.set_environmental_data(
+                self.environment.humidity, self.environment.celsius)
 
     def set_temperature_offset(self, temp):
         """

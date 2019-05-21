@@ -48,7 +48,7 @@ class GrowBox:
         self.lights = Lights()
         self.ds18b20 = DS18B20()
         self.bme280 = BME280()
-        self.ccs811 = CCS811()
+        self.ccs811 = CCS811(self.ds18b20)
         self.lux = TSL2591()
         #self.veml = VEML6075()
         self.quad_relay = QuadRelay()
@@ -80,6 +80,7 @@ class GrowBox:
 
     def run(self):
         self.begin()
+        count = 0
 
         with open(self.logfile, 'a') as csvfile:
             writer = csv.DictWriter(csvfile, quoting=csv.QUOTE_MINIMAL,
@@ -105,10 +106,16 @@ class GrowBox:
                 logger.info("Processing data")
                 self.process(data)
 
+                if count % 100:
+                    self.ccs811.calibrate_to_env()
+                    count = 0
+
                 left = start + self.rate - time.time()
                 logger.info(f"Sleeping {left} seconds")
                 if left > 0:
                     time.sleep(left)
+
+                count += 1
 
     def mister_status(self):
         return self.mister.status
