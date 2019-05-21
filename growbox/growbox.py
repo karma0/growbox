@@ -110,7 +110,7 @@ class GrowBox:
                 logger.info("Processing data")
                 self.process(data)
 
-                if count % 100:
+                if count % 100:  # every ~1000 seconds
                     self.ccs811.calibrate_to_env()
                     count = 0
                 else:
