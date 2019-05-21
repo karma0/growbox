@@ -5,7 +5,7 @@
 import time
 import logging
 
-from growbox.operators.range import InRange, OutOfRange
+from growbox.operators.range import OutOfRange
 from growbox.operators.timer import Timer
 
 

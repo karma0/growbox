@@ -19,6 +19,7 @@ from growbox.dev.sense.ccs811 import CCS811
 #from growbox.dev.sense.veml6075 import VEML6075
 from growbox.dev.sense.tsl2591 import TSL2591
 
+from growbox.facade.environment import Environment
 from growbox.facade.lights import Lights
 from growbox.facade.relay import Relay
 from growbox.profile import Profile
@@ -45,9 +46,11 @@ class GrowBox:
         self.logfile = logfile
 
         self.display = Display()
+
         self.ds18b20 = DS18B20()
         self.bme280 = BME280()
-        self.ccs811 = CCS811(self.ds18b20)
+        self.environment = Environment(self.ds18b20, self.bme280)
+        self.ccs811 = CCS811(self.environment)
         self.lux = TSL2591()
         #self.veml = VEML6075()
 
