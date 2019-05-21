@@ -61,7 +61,6 @@ class Profile:
 
         if self.air_exchange_rate is not None:
             if self.air_exchange_rate():
-                self.box.mister.off()
                 self.box.fans.exchange(30)
 
     @property

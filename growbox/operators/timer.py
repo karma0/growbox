@@ -13,7 +13,7 @@ logger.setLevel(logging.DEBUG)
 
 
 class Timer:
-    last_time = time.time()
+    next_time = time.time()
 
     def __init__(self, action=None, **kwargs):
         self.action = action
@@ -26,7 +26,7 @@ class Timer:
         """Call to update time"""
         if self.timesup:
             logger.info(f"Time is up on timer for {self.seconds} seconds.")
-            self.last_time = time.time()
+            self.next_time = time.time() + self.seconds
             if callable(self.action):
                 self.action()
             return True
@@ -35,4 +35,4 @@ class Timer:
     @property
     def timesup(self):
         """Return True if time is up"""
-        return self.last_time < (time.time() - self.seconds)
+        return self.next_time < time.time()
