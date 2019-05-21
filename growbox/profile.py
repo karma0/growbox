@@ -62,6 +62,7 @@ class Profile:
         if self.air_exchange_rate is not None:
             if self.air_exchange_rate():
                 self.box.fans.exchange(30)
+                self.air_exchange_rate = Timer(minutes=20)
 
     @property
     def profile(self):

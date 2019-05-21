@@ -36,8 +36,8 @@ class GrowBox:
 
     relays = OrderedDict([
         ('mister', 0),
-        ('heater', 1),
-        ('lamp', 2),
+        ('misterfan', 1),
+        ('heater', 2),
         ('none', 3),
     ])
 
@@ -45,12 +45,13 @@ class GrowBox:
         self.logfile = logfile
 
         self.display = Display()
-        self.lights = Lights()
         self.ds18b20 = DS18B20()
         self.bme280 = BME280()
         self.ccs811 = CCS811(self.ds18b20)
         self.lux = TSL2591()
         #self.veml = VEML6075()
+
+        self.lights = Lights()
         self.quad_relay = QuadRelay()
         self.mister = Relay(self.quad_relay, relay_id=self.relays.get('mister'))
         self.fans = Fans()
