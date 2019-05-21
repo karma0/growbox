@@ -18,16 +18,19 @@ class Relay:
         self._id = relay_id
 
     def on(self):
-        logger.info(f"Relay {self._id} on.")
+        logger.info(f"Relays {self._id} & {self._id + 1} on.")
         self.quad_relay.on(self._id)
+        self.quad_relay.on(self._id + 1)
 
     def off(self):
-        logger.info(f"Relay {self._id} off.")
+        logger.info(f"Relays {self._id} & {self._id + 1} off.")
         self.quad_relay.off(self._id)
+        self.quad_relay.off(self._id + 1)
 
     def toggle(self):
-        logger.info(f"Relay {self._id} toggle.")
+        logger.info(f"Relays {self._id} & {self._id + 1} toggle.")
         self.quad_relay.toggle(self._id)
+        self.quad_relay.toggle(self._id + 1)
 
     def humidify(self):
         self.on()
