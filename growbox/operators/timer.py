@@ -13,21 +13,23 @@ logger.setLevel(logging.DEBUG)
 
 
 class Timer:
-    next_time = time.time()
-
     def __init__(self, action=None, **kwargs):
         self.action = action
         self.seconds = kwargs.pop('seconds', 0)
         self.seconds += kwargs.pop('minutes', 0) * 60
         self.seconds += kwargs.pop('hours', 0) * 60 * 60
         self.seconds += kwargs.pop('days', 0) * 60 * 60 * 24
+        self.set_timer()
+
+    def set_timer(self):
+        self.next_time = time.time() + self.seconds
 
     def __call__(self):
         """Call to update time"""
         if self.timesup:
             logger.info(f"Time is up on timer for {self.seconds} seconds.")
             logger.info(f"Next Time: {self.next_time}; now: {time.time()}")
-            self.next_time = time.time() + self.seconds
+            self.set_timer()
             logger.info(f"Next Time calculated: {self.next_time}")
             if callable(self.action):
                 self.action()
