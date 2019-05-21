@@ -28,9 +28,7 @@ class Timer:
         """Call to update time"""
         if self.timesup:
             logger.info(f"Time is up on timer for {self.seconds} seconds.")
-            logger.info(f"Next Time: {self.next_time}; now: {time.time()}")
             self.set_timer()
-            logger.info(f"Next Time calculated: {self.next_time}")
             if callable(self.action):
                 self.action()
             return True
