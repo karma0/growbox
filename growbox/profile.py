@@ -5,7 +5,7 @@
 import time
 import logging
 
-from growbox.operators.range import InRange
+from growbox.operators.range import InRange, OutOfRange
 from growbox.operators.timer import Timer
 
 
@@ -40,7 +40,7 @@ class Profile:
         #            self.box.fans.exchange()
 
         if self.lux is not None:
-            if not self.lux(data['lux']) \
+            if self.lux(data['lux']) \
                     and time.localtime().tm_hour > 6 \
                     and time.localtime().tm_hour < 20:
                 if data['lux'] < self.lux.minval:
@@ -49,14 +49,14 @@ class Profile:
                     self.box.lights.darker(10, 10, 10, 10)
 
         if self.humidity is not None:
-            if not self.humidity(data['humidity']):
+            if self.humidity(data['humidity']):
                 if data['humidity'] < self.humidity.minval:
                     self.box.mister.humidify()
                 elif data['humidity'] > self.humidity.maxval:
                     self.box.fans.exchange(30)
 
         if self.co2 is not None:
-            if not self.co2(data['co2']):
+            if self.co2(data['co2']):
                 self.box.fans.exchange(30)
 
         if self.air_exchange_rate is not None:
@@ -75,13 +75,13 @@ class Profile:
 
         # Set some defaults
         if self.lux is None:
-            self.lux = InRange(400, 800)
+            self.lux = OutOfRange(400, 800)
         #if self.celsius is None:
         #    self.celsius = InRange(18, 24)
         if self.humidity is None:
-            self.humidity = InRange(95, 100)
+            self.humidity = OutOfRange(95, 101)
         if self.co2 is None:
-            self.co2 = InRange(maxval=2000)
+            self.co2 = OutOfRange(maxval=2000)
         if self.air_exchange_rate is None:
             self.air_exchange_rate = Timer(minutes=20)
 
