@@ -109,13 +109,13 @@ class GrowBox:
                 if count % 100:
                     self.ccs811.calibrate_to_env()
                     count = 0
+                else:
+                    count += 1
 
                 left = start + self.rate - time.time()
                 logger.info(f"Sleeping {left} seconds")
                 if left > 0:
                     time.sleep(left)
-
-                count += 1
 
     def mister_status(self):
         return self.mister.status
