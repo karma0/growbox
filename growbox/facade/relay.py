@@ -32,9 +32,9 @@ class Relay:
         self.quad_relay.toggle(self._id)
         self.quad_relay.toggle(self._id + 1)
 
-    def humidify(self):
+    def humidify(self, duration=10):
         self.on()
-        time.sleep(10)
+        time.sleep(duration)
         self.off()
 
     @property

@@ -51,7 +51,7 @@ class Profile:
         if self.humidity is not None:
             if self.humidity(data['humidity']):
                 if data['humidity'] < self.humidity.minval:
-                    self.box.mister.humidify()
+                    self.box.mister.humidify(30)
                 elif data['humidity'] > self.humidity.maxval:
                     self.box.fans.exchange(30)
 
